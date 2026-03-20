@@ -1515,50 +1515,6 @@ function normalizeError(error: unknown): string {
   color: var(--playground-ink);
 }
 
-:global(.dark) .playground-shell {
-  --playground-paper: rgba(15, 23, 28, 0.82);
-  --playground-line: rgba(148, 163, 184, 0.18);
-  --playground-ink: #e5eef0;
-  --playground-muted: #9bb0b8;
-  --playground-accent: #2dd4bf;
-  --playground-accent-strong: #5eead4;
-  --playground-warning: #f59e0b;
-  --playground-danger: #f87171;
-  --playground-bg:
-    radial-gradient(circle at top left, rgba(45, 212, 191, 0.16), transparent 32%),
-    radial-gradient(circle at top right, rgba(245, 158, 11, 0.12), transparent 28%),
-    linear-gradient(180deg, #071217 0%, #0b1a20 100%);
-  --playground-panel-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
-  --playground-card-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
-  --playground-button-border: rgba(148, 163, 184, 0.22);
-  --playground-button-bg: rgba(15, 23, 28, 0.88);
-  --playground-button-hover-border: rgba(45, 212, 191, 0.44);
-  --playground-section-icon-bg: rgba(45, 212, 191, 0.14);
-  --playground-runtime-ready-border: rgba(45, 212, 191, 0.32);
-  --playground-runtime-error-border: rgba(248, 113, 113, 0.32);
-  --playground-empty-bg: rgba(10, 19, 24, 0.72);
-  --playground-card-border: rgba(148, 163, 184, 0.16);
-  --playground-card-bg: rgba(11, 26, 32, 0.78);
-  --playground-card-connected-border: rgba(45, 212, 191, 0.28);
-  --playground-card-error-border: rgba(248, 113, 113, 0.3);
-  --playground-status-bg: rgba(45, 212, 191, 0.14);
-  --playground-switch-border: rgba(148, 163, 184, 0.22);
-  --playground-switch-bg: rgba(17, 32, 38, 0.94);
-  --playground-switch-thumb-bg: #dceef0;
-  --playground-switch-thumb-shadow: 0 2px 8px rgba(0, 0, 0, 0.32);
-  --playground-switch-checked-bg: rgba(45, 212, 191, 0.22);
-  --playground-switch-checked-border: rgba(45, 212, 191, 0.42);
-  --playground-schema-active-border: rgba(45, 212, 191, 0.38);
-  --playground-schema-active-bg: rgba(45, 212, 191, 0.18);
-  --playground-input-border: rgba(148, 163, 184, 0.22);
-  --playground-input-bg: rgba(15, 23, 28, 0.88);
-  --playground-input-focus-border: rgba(45, 212, 191, 0.56);
-  --playground-input-focus-ring: 0 0 0 4px rgba(45, 212, 191, 0.16);
-  --playground-divider: rgba(148, 163, 184, 0.16);
-  --playground-disabled-bg: rgba(29, 46, 52, 0.72);
-  --playground-disabled-ink: rgba(229, 238, 240, 0.5);
-}
-
 .playground-frame {
   width: min(1240px, 100%);
   height: 100%;
@@ -1804,10 +1760,6 @@ function normalizeError(error: unknown): string {
   background: rgba(255, 255, 255, 0.42);
 }
 
-:global(.dark) .capability-list li {
-  background: rgba(15, 23, 28, 0.46);
-}
-
 .capability-name {
   font-family: "IBM Plex Mono", "SFMono-Regular", ui-monospace, monospace;
   font-size: 0.76rem;
@@ -1827,11 +1779,6 @@ function normalizeError(error: unknown): string {
   border-radius: 12px;
   border: 1px solid var(--playground-line);
   background: rgba(255, 255, 255, 0.42);
-}
-
-:global(.dark) .capability-warning,
-:global(.dark) .capability-status {
-  background: rgba(15, 23, 28, 0.46);
 }
 
 .capability-warning {
@@ -2244,5 +2191,57 @@ function normalizeError(error: unknown): string {
   .schema-options--open {
     max-width: 100%;
   }
+}
+</style>
+
+<style>
+html.dark .playground-shell {
+  --playground-paper: rgba(15, 23, 28, 0.82);
+  --playground-line: rgba(148, 163, 184, 0.18);
+  --playground-ink: #e5eef0;
+  --playground-muted: #9bb0b8;
+  --playground-accent: #2dd4bf;
+  --playground-accent-strong: #5eead4;
+  --playground-warning: #f59e0b;
+  --playground-danger: #f87171;
+  --playground-bg:
+    radial-gradient(circle at top left, rgba(45, 212, 191, 0.16), transparent 32%),
+    radial-gradient(circle at top right, rgba(245, 158, 11, 0.12), transparent 28%),
+    linear-gradient(180deg, #071217 0%, #0b1a20 100%);
+  --playground-panel-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+  --playground-card-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+  --playground-button-border: rgba(148, 163, 184, 0.22);
+  --playground-button-bg: rgba(15, 23, 28, 0.88);
+  --playground-button-hover-border: rgba(45, 212, 191, 0.44);
+  --playground-section-icon-bg: rgba(45, 212, 191, 0.14);
+  --playground-runtime-ready-border: rgba(45, 212, 191, 0.32);
+  --playground-runtime-error-border: rgba(248, 113, 113, 0.32);
+  --playground-empty-bg: rgba(10, 19, 24, 0.72);
+  --playground-card-border: rgba(148, 163, 184, 0.16);
+  --playground-card-bg: rgba(11, 26, 32, 0.78);
+  --playground-card-connected-border: rgba(45, 212, 191, 0.28);
+  --playground-card-error-border: rgba(248, 113, 113, 0.3);
+  --playground-status-bg: rgba(45, 212, 191, 0.14);
+  --playground-switch-border: rgba(148, 163, 184, 0.22);
+  --playground-switch-bg: rgba(17, 32, 38, 0.94);
+  --playground-switch-thumb-bg: #dceef0;
+  --playground-switch-thumb-shadow: 0 2px 8px rgba(0, 0, 0, 0.32);
+  --playground-switch-checked-bg: rgba(45, 212, 191, 0.22);
+  --playground-switch-checked-border: rgba(45, 212, 191, 0.42);
+  --playground-schema-active-border: rgba(45, 212, 191, 0.38);
+  --playground-schema-active-bg: rgba(45, 212, 191, 0.18);
+  --playground-input-border: rgba(148, 163, 184, 0.22);
+  --playground-input-bg: rgba(15, 23, 28, 0.88);
+  --playground-input-focus-border: rgba(45, 212, 191, 0.56);
+  --playground-input-focus-ring: 0 0 0 4px rgba(45, 212, 191, 0.16);
+  --playground-divider: rgba(148, 163, 184, 0.16);
+  --playground-disabled-bg: rgba(29, 46, 52, 0.72);
+  --playground-disabled-ink: rgba(229, 238, 240, 0.5);
+}
+
+html.dark .playground-shell .capability-list li,
+html.dark .playground-shell .capability-warning,
+html.dark .playground-shell .capability-status {
+  background: rgba(15, 23, 28, 0.46);
 }
 </style>
