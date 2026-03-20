@@ -1,9 +1,9 @@
 {
-  "name": "mdp",
+  "name": "modeldriveprotocol",
   "private": true,
   "packageManager": "pnpm@10.28.0",
   "scripts": {
-    "build": "pnpm --filter @mdp/protocol build && pnpm --filter @mdp/client build && pnpm --filter @mdp/server build",
+    "build": "pnpm --filter @modeldriveprotocol/protocol build && pnpm --filter @modeldriveprotocol/client build && pnpm --filter @modeldriveprotocol/server build",
     "clean": "node scripts/clean.mjs",
     "typecheck": "tsc -b tsconfig.json --pretty false",
     "test": "node scripts/smoke-test.mjs",

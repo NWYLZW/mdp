@@ -22,7 +22,7 @@ node packages/server/dist/cli.js --port 7070
 For a browser-first path, load the generated bundle:
 
 ```html
-<script src="/packages/client/dist/mdp-client.global.js"></script>
+<script src="/assets/modeldriveprotocol-client.global.js"></script>
 ```
 
 Then create and register a client:

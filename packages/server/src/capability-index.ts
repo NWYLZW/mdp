@@ -6,7 +6,7 @@ import type {
   IndexedSkillDescriptor,
   IndexedToolDescriptor,
   ListedClient
-} from "@mdp/protocol";
+} from "@modeldriveprotocol/protocol";
 
 export interface RegisteredClientSnapshot {
   descriptor: ClientDescriptor;

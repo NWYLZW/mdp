@@ -26,7 +26,7 @@ importers:
 
   packages/client:
     dependencies:
-      '@mdp/protocol':
+      '@modeldriveprotocol/protocol':
         specifier: workspace:*
         version: link:../protocol
 
@@ -34,12 +34,12 @@ importers:
 
   packages/server:
     dependencies:
-      '@mdp/protocol':
-        specifier: workspace:*
-        version: link:../protocol
       '@modelcontextprotocol/sdk':
         specifier: ^1.17.4
         version: 1.27.1(zod@3.25.76)
+      '@modeldriveprotocol/protocol':
+        specifier: workspace:*
+        version: link:../protocol
       ws:
         specifier: ^8.18.3
         version: 8.19.0

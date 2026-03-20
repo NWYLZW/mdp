@@ -1,12 +1,15 @@
 # Model Drive Protocol
 
+| en-US | [zh-Hans](./README.zh-Hans.md) |
+| --- | --- |
+
 MDP is a cross-runtime capability registration and RPC bridge protocol built around MCP.
 
 In this repo, the current MVP is:
 
 - a TypeScript MDP server
 - a TypeScript client SDK that builds to JavaScript
-- a VitePress documentation site
+- a multilingual VitePress documentation site
 - a stable MCP bridge surface built from fixed tools instead of dynamic per-client tool generation
 
 ## What MDP Solves
@@ -114,7 +117,7 @@ Current MVP scope:
 - client capability registration
 - routing from MCP bridge tools to connected clients
 - TypeScript client runtime with JavaScript output
-- browser global bundle at `packages/client/dist/mdp-client.global.js`
+- browser global bundle at `packages/client/dist/modeldriveprotocol-client.global.js`
 
 Out of scope for this MVP:
 

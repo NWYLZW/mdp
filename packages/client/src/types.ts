@@ -4,7 +4,7 @@ import type {
   JsonSchema,
   PromptArgumentDescriptor,
   RpcArguments
-} from "@mdp/protocol";
+} from "@modeldriveprotocol/protocol";
 
 export interface ClientInfo {
   id: string;

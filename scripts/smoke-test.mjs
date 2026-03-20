@@ -24,7 +24,7 @@ transport.stderr?.on("data", (chunk) => {
 
 const mcpClient = new Client(
   {
-    name: "mdp-smoke-test",
+    name: "modeldriveprotocol-smoke-test",
     version: "0.1.0"
   },
   {
@@ -68,7 +68,7 @@ mdpClient
 
 try {
   const browserBundle = await readFile(
-    new URL("../packages/client/dist/mdp-client.global.js", import.meta.url),
+    new URL("../packages/client/dist/modeldriveprotocol-client.global.js", import.meta.url),
     "utf8"
   );
   assert.match(browserBundle, /var MDP =/);

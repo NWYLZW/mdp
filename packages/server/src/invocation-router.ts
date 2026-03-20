@@ -1,6 +1,10 @@
 import { randomUUID } from "node:crypto";
 
-import type { CallClientResultMessage, CapabilityKind, RpcArguments } from "@mdp/protocol";
+import type {
+  CallClientResultMessage,
+  CapabilityKind,
+  RpcArguments
+} from "@modeldriveprotocol/protocol";
 
 import type { CapabilityIndex } from "./capability-index.js";
 import type { ClientSession } from "./client-session.js";

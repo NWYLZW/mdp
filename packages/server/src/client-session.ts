@@ -1,4 +1,7 @@
-import type { ClientDescriptor, ServerToClientMessage } from "@mdp/protocol";
+import type {
+  ClientDescriptor,
+  ServerToClientMessage
+} from "@modeldriveprotocol/protocol";
 import WebSocket from "ws";
 
 export class ClientSession {

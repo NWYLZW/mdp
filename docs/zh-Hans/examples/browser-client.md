@@ -1,20 +1,20 @@
 ---
-title: Browser Client
+title: 浏览器客户端
 status: MVP
 ---
 
-# Browser Client
+# 浏览器客户端
 
-A browser client can expose:
+浏览器 client 可以暴露：
 
-- page selection as a resource
-- DOM search as a tool
-- page summarization as a prompt
-- page inspection workflow as a skill
+- 页面选区作为 resource
+- DOM 搜索作为 tool
+- 页面摘要作为 prompt
+- 页面检查工作流作为 skill
 
-This is the simplest path for proving the bridge model end to end.
+这是验证整条 bridge 链路最简单的一条路径。
 
-## Minimal HTML Example
+## 最小 HTML 示例
 
 ```html
 <!doctype html>
@@ -59,6 +59,6 @@ This is the simplest path for proving the bridge model end to end.
 </html>
 ```
 
-## Repo Example
+## 仓库示例
 
-See [the Pages-hosted browser example](/examples/browser/index.html) for a concrete starter file.
+可直接查看[部署在 Pages 上的浏览器示例](/examples/browser/index.html)作为启动模板。

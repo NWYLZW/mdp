@@ -7,7 +7,7 @@ const packageRoot = resolve(__dirname, "..");
 
 await build({
   entryPoints: [resolve(packageRoot, "dist/global.js")],
-  outfile: resolve(packageRoot, "dist/mdp-client.global.js"),
+  outfile: resolve(packageRoot, "dist/modeldriveprotocol-client.global.js"),
   bundle: true,
   format: "iife",
   globalName: "MDP",

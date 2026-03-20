@@ -1,5 +1,9 @@
-import type { ClientDescriptor, ClientToServerMessage, ListedClient } from "@mdp/protocol";
-import { createSerializedError } from "@mdp/protocol";
+import type {
+  ClientDescriptor,
+  ClientToServerMessage,
+  ListedClient
+} from "@modeldriveprotocol/protocol";
+import { createSerializedError } from "@modeldriveprotocol/protocol";
 import type WebSocket from "ws";
 
 import { CapabilityIndex, type CapabilityTarget, type RegisteredClientSnapshot } from "./capability-index.js";

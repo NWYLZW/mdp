@@ -1,5 +1,5 @@
 {
-  "name": "@mdp/client",
+  "name": "@modeldriveprotocol/client",
   "version": "0.1.0",
   "type": "module",
   "main": "./dist/index.js",
@@ -14,14 +14,14 @@
       "default": "./dist/browser-entry.js"
     },
     "./global": {
-      "default": "./dist/mdp-client.global.js"
+      "default": "./dist/modeldriveprotocol-client.global.js"
     }
   },
   "files": [
     "dist"
   ],
   "dependencies": {
-    "@mdp/protocol": "workspace:*"
+    "@modeldriveprotocol/protocol": "workspace:*"
   },
   "scripts": {
     "build": "tsc -b && node ./scripts/bundle.mjs",

@@ -11,7 +11,9 @@ const targets = [
   "docs/.vitepress/cache",
   "docs/.vitepress/dist",
   "docs/public/assets/mdp-client.global.js",
-  "docs/public/assets/mdp-client.global.js.map"
+  "docs/public/assets/mdp-client.global.js.map",
+  "docs/public/assets/modeldriveprotocol-client.global.js",
+  "docs/public/assets/modeldriveprotocol-client.global.js.map"
 ];
 
 await Promise.all(

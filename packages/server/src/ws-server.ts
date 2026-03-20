@@ -1,7 +1,11 @@
 import { randomUUID } from "node:crypto";
 import { createServer } from "node:http";
 
-import { isMdpMessage, parseMessage, type ClientToServerMessage } from "@mdp/protocol";
+import {
+  isMdpMessage,
+  parseMessage,
+  type ClientToServerMessage
+} from "@modeldriveprotocol/protocol";
 import type { RawData } from "ws";
 import WebSocket, { WebSocketServer } from "ws";
 

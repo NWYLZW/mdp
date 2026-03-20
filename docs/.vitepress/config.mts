@@ -1,101 +1,294 @@
-import { defineConfig } from "vitepress";
+import { defineConfig, type DefaultTheme } from "vitepress";
+
+type LocalePrefix = "" | "/zh-Hans";
+
+interface LocaleCopy {
+  nav: {
+    guide: string;
+    protocol: string;
+    server: string;
+    client: string;
+    examples: string;
+    reference: string;
+  };
+  sections: {
+    guide: string;
+    protocol: string;
+    server: string;
+    client: string;
+    examples: string;
+    reference: string;
+  };
+  pages: {
+    introduction: string;
+    architecture: string;
+    quickStart: string;
+    faq: string;
+    overview: string;
+    capabilityModel: string;
+    transport: string;
+    lifecycle: string;
+    mcpBridge: string;
+    messageSchema: string;
+    security: string;
+    serverOverview: string;
+    mvpDesign: string;
+    api: string;
+    clientOverview: string;
+    jsClient: string;
+    embedding: string;
+    browserClient: string;
+    nativeClient: string;
+    endToEnd: string;
+    glossary: string;
+    roadmap: string;
+  };
+  footerMessage: string;
+  outlineLabel: string;
+  lastUpdatedText: string;
+  docFooterPrev: string;
+  docFooterNext: string;
+  sidebarMenuLabel: string;
+  returnToTopLabel: string;
+  langMenuLabel: string;
+}
 
 const base = resolveGitHubPagesBase();
+
+const enUS: LocaleCopy = {
+  nav: {
+    guide: "Guide",
+    protocol: "Protocol",
+    server: "Server",
+    client: "Client",
+    examples: "Examples",
+    reference: "Reference"
+  },
+  sections: {
+    guide: "Guide",
+    protocol: "Protocol",
+    server: "Server",
+    client: "Client",
+    examples: "Examples",
+    reference: "Reference"
+  },
+  pages: {
+    introduction: "Introduction",
+    architecture: "Architecture",
+    quickStart: "Quick Start",
+    faq: "FAQ",
+    overview: "Overview",
+    capabilityModel: "Capability Model",
+    transport: "Transport",
+    lifecycle: "Lifecycle",
+    mcpBridge: "MCP Bridge",
+    messageSchema: "Message Schema",
+    security: "Security",
+    serverOverview: "Overview",
+    mvpDesign: "MVP Design",
+    api: "API",
+    clientOverview: "Overview",
+    jsClient: "JS Client",
+    embedding: "Embedding",
+    browserClient: "Browser Client",
+    nativeClient: "Native Client",
+    endToEnd: "End-to-End",
+    glossary: "Glossary",
+    roadmap: "Roadmap"
+  },
+  footerMessage: "Model Drive Protocol",
+  outlineLabel: "On this page",
+  lastUpdatedText: "Last updated",
+  docFooterPrev: "Previous page",
+  docFooterNext: "Next page",
+  sidebarMenuLabel: "Menu",
+  returnToTopLabel: "Return to top",
+  langMenuLabel: "Change language"
+};
+
+const zhHans: LocaleCopy = {
+  nav: {
+    guide: "指南",
+    protocol: "协议",
+    server: "服务端",
+    client: "客户端",
+    examples: "示例",
+    reference: "参考"
+  },
+  sections: {
+    guide: "指南",
+    protocol: "协议",
+    server: "服务端",
+    client: "客户端",
+    examples: "示例",
+    reference: "参考"
+  },
+  pages: {
+    introduction: "介绍",
+    architecture: "架构",
+    quickStart: "快速开始",
+    faq: "常见问题",
+    overview: "概览",
+    capabilityModel: "能力模型",
+    transport: "传输",
+    lifecycle: "生命周期",
+    mcpBridge: "MCP Bridge",
+    messageSchema: "消息模型",
+    security: "安全",
+    serverOverview: "概览",
+    mvpDesign: "MVP 设计",
+    api: "API",
+    clientOverview: "概览",
+    jsClient: "JS 客户端",
+    embedding: "嵌入方式",
+    browserClient: "浏览器客户端",
+    nativeClient: "原生客户端",
+    endToEnd: "端到端",
+    glossary: "术语表",
+    roadmap: "路线图"
+  },
+  footerMessage: "模型驱动协议",
+  outlineLabel: "本页导航",
+  lastUpdatedText: "最后更新",
+  docFooterPrev: "上一页",
+  docFooterNext: "下一页",
+  sidebarMenuLabel: "目录",
+  returnToTopLabel: "返回顶部",
+  langMenuLabel: "切换语言"
+};
 
 export default defineConfig({
   title: "MDP",
   description: "Model Drive Protocol documentation",
-  lang: "zh-CN",
   base,
   cleanUrls: true,
   lastUpdated: true,
   appearance: false,
-  themeConfig: {
-    siteTitle: "MDP",
-    nav: [
-      { text: "Guide", link: "/guide/introduction" },
-      { text: "Protocol", link: "/protocol/overview" },
-      { text: "Server", link: "/server/overview" },
-      { text: "Client", link: "/client/overview" },
-      { text: "Examples", link: "/examples/browser-client" },
-      { text: "Reference", link: "/reference/glossary" }
-    ],
-    sidebar: {
-      "/guide/": [
-        {
-          text: "Guide",
-          items: [
-            { text: "Introduction", link: "/guide/introduction" },
-            { text: "Architecture", link: "/guide/architecture" },
-            { text: "Quick Start", link: "/guide/quick-start" },
-            { text: "FAQ", link: "/guide/faq" }
-          ]
-        }
-      ],
-      "/protocol/": [
-        {
-          text: "Protocol",
-          items: [
-            { text: "Overview", link: "/protocol/overview" },
-            { text: "Capability Model", link: "/protocol/capability-model" },
-            { text: "Transport", link: "/protocol/transport" },
-            { text: "Lifecycle", link: "/protocol/lifecycle" },
-            { text: "MCP Bridge", link: "/protocol/mcp-bridge" },
-            { text: "Message Schema", link: "/protocol/message-schema" },
-            { text: "Security", link: "/protocol/security" }
-          ]
-        }
-      ],
-      "/server/": [
-        {
-          text: "Server",
-          items: [
-            { text: "Overview", link: "/server/overview" },
-            { text: "MVP Design", link: "/server/mvp-design" },
-            { text: "API", link: "/server/api" }
-          ]
-        }
-      ],
-      "/client/": [
-        {
-          text: "Client",
-          items: [
-            { text: "Overview", link: "/client/overview" },
-            { text: "JS Client", link: "/client/js-client" },
-            { text: "Embedding", link: "/client/embedding" }
-          ]
-        }
-      ],
-      "/examples/": [
-        {
-          text: "Examples",
-          items: [
-            { text: "Browser Client", link: "/examples/browser-client" },
-            { text: "Native Client", link: "/examples/native-client" },
-            { text: "End-to-End", link: "/examples/end-to-end" }
-          ]
-        }
-      ],
-      "/reference/": [
-        {
-          text: "Reference",
-          items: [
-            { text: "Glossary", link: "/reference/glossary" },
-            { text: "Roadmap", link: "/reference/roadmap" }
-          ]
-        }
-      ]
+  locales: {
+    root: {
+      label: "en-US",
+      lang: "en-US",
+      title: "MDP",
+      description: "Model Drive Protocol documentation",
+      themeConfig: createThemeConfig("", enUS)
     },
-    footer: {
-      message: "Model Drive Protocol",
-      copyright: "MIT"
+    "zh-Hans": {
+      label: "zh-Hans",
+      lang: "zh-Hans",
+      link: "/zh-Hans/",
+      title: "MDP",
+      description: "Model Drive Protocol 文档",
+      themeConfig: createThemeConfig("/zh-Hans", zhHans)
     }
   }
 });
 
+function createThemeConfig(prefix: LocalePrefix, copy: LocaleCopy): DefaultTheme.Config {
+  return {
+    nav: [
+      { text: copy.nav.guide, link: localePath(prefix, "/guide/introduction") },
+      { text: copy.nav.protocol, link: localePath(prefix, "/protocol/overview") },
+      { text: copy.nav.server, link: localePath(prefix, "/server/overview") },
+      { text: copy.nav.client, link: localePath(prefix, "/client/overview") },
+      { text: copy.nav.examples, link: localePath(prefix, "/examples/browser-client") },
+      { text: copy.nav.reference, link: localePath(prefix, "/reference/glossary") }
+    ],
+    sidebar: {
+      [localePath(prefix, "/guide/")]: [
+        {
+          text: copy.sections.guide,
+          items: [
+            { text: copy.pages.introduction, link: localePath(prefix, "/guide/introduction") },
+            { text: copy.pages.architecture, link: localePath(prefix, "/guide/architecture") },
+            { text: copy.pages.quickStart, link: localePath(prefix, "/guide/quick-start") },
+            { text: copy.pages.faq, link: localePath(prefix, "/guide/faq") }
+          ]
+        }
+      ],
+      [localePath(prefix, "/protocol/")]: [
+        {
+          text: copy.sections.protocol,
+          items: [
+            { text: copy.pages.overview, link: localePath(prefix, "/protocol/overview") },
+            {
+              text: copy.pages.capabilityModel,
+              link: localePath(prefix, "/protocol/capability-model")
+            },
+            { text: copy.pages.transport, link: localePath(prefix, "/protocol/transport") },
+            { text: copy.pages.lifecycle, link: localePath(prefix, "/protocol/lifecycle") },
+            { text: copy.pages.mcpBridge, link: localePath(prefix, "/protocol/mcp-bridge") },
+            {
+              text: copy.pages.messageSchema,
+              link: localePath(prefix, "/protocol/message-schema")
+            },
+            { text: copy.pages.security, link: localePath(prefix, "/protocol/security") }
+          ]
+        }
+      ],
+      [localePath(prefix, "/server/")]: [
+        {
+          text: copy.sections.server,
+          items: [
+            { text: copy.pages.serverOverview, link: localePath(prefix, "/server/overview") },
+            { text: copy.pages.mvpDesign, link: localePath(prefix, "/server/mvp-design") },
+            { text: copy.pages.api, link: localePath(prefix, "/server/api") }
+          ]
+        }
+      ],
+      [localePath(prefix, "/client/")]: [
+        {
+          text: copy.sections.client,
+          items: [
+            { text: copy.pages.clientOverview, link: localePath(prefix, "/client/overview") },
+            { text: copy.pages.jsClient, link: localePath(prefix, "/client/js-client") },
+            { text: copy.pages.embedding, link: localePath(prefix, "/client/embedding") }
+          ]
+        }
+      ],
+      [localePath(prefix, "/examples/")]: [
+        {
+          text: copy.sections.examples,
+          items: [
+            { text: copy.pages.browserClient, link: localePath(prefix, "/examples/browser-client") },
+            { text: copy.pages.nativeClient, link: localePath(prefix, "/examples/native-client") },
+            { text: copy.pages.endToEnd, link: localePath(prefix, "/examples/end-to-end") }
+          ]
+        }
+      ],
+      [localePath(prefix, "/reference/")]: [
+        {
+          text: copy.sections.reference,
+          items: [
+            { text: copy.pages.glossary, link: localePath(prefix, "/reference/glossary") },
+            { text: copy.pages.roadmap, link: localePath(prefix, "/reference/roadmap") }
+          ]
+        }
+      ]
+    },
+    socialLinks: [{ icon: "github", link: "https://github.com/NWYLZW/mdp" }],
+    outline: { label: copy.outlineLabel },
+    lastUpdated: { text: copy.lastUpdatedText },
+    docFooter: {
+      prev: copy.docFooterPrev,
+      next: copy.docFooterNext
+    },
+    footer: {
+      message: copy.footerMessage
+    },
+    sidebarMenuLabel: copy.sidebarMenuLabel,
+    returnToTopLabel: copy.returnToTopLabel,
+    langMenuLabel: copy.langMenuLabel
+  };
+}
+
+function localePath(prefix: LocalePrefix, path: string): string {
+  return prefix ? `${prefix}${path}` : path;
+}
+
 function resolveGitHubPagesBase(): string {
-  if (process.env.VITEPRESS_BASE) {
-    return normalizeBase(process.env.VITEPRESS_BASE);
+  const explicitBase = process.env.VITEPRESS_BASE;
+  if (explicitBase) {
+    return normalizeBase(explicitBase);
   }
 
   const repository = process.env.GITHUB_REPOSITORY?.split("/")[1];
@@ -105,20 +298,23 @@ function resolveGitHubPagesBase(): string {
     return "/";
   }
 
-  const userOrOrgSiteRepository = `${owner.toLowerCase()}.github.io`;
+  if (repository.toLowerCase() === `${owner.toLowerCase()}.github.io`) {
+    return "/";
+  }
 
-  return repository.toLowerCase() === userOrOrgSiteRepository
-    ? "/"
-    : normalizeBase(`/${repository}/`);
+  return normalizeBase(`/${repository}/`);
 }
 
 function normalizeBase(value: string): string {
-  if (value === "/") {
-    return value;
+  let normalized = value.trim();
+
+  if (!normalized.startsWith("/")) {
+    normalized = `/${normalized}`;
   }
 
-  const withLeadingSlash = value.startsWith("/") ? value : `/${value}`;
-  return withLeadingSlash.endsWith("/")
-    ? withLeadingSlash
-    : `${withLeadingSlash}/`;
+  if (!normalized.endsWith("/")) {
+    normalized = `${normalized}/`;
+  }
+
+  return normalized;
 }

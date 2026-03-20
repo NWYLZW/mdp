@@ -5,7 +5,7 @@ import type {
   ResourceDescriptor,
   SkillDescriptor,
   ToolDescriptor
-} from "@mdp/protocol";
+} from "@modeldriveprotocol/protocol";
 
 import type {
   CapabilityHandler,

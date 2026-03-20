@@ -1,4 +1,4 @@
-import { parseMessage } from "@mdp/protocol";
+import { parseMessage } from "@modeldriveprotocol/protocol";
 
 import type { ClientTransport } from "./types.js";
 

@@ -1,28 +1,28 @@
 ---
-title: JS Client
+title: JS 客户端
 status: MVP
 ---
 
-# JS Client
+# JS 客户端
 
-The JavaScript client is a convenience adapter, not the protocol itself.
+JavaScript client 是一个方便使用的适配器，不是协议本身。
 
-It is useful for:
+它适合这些场景：
 
-- browser embedding
-- Node-based local agents
-- quick prototyping
+- 浏览器嵌入
+- 基于 Node 的本地 agent
+- 快速原型验证
 
-The JS client should expose the same abstraction as other runtimes: register capability handlers, connect, handle routed calls, and report results.
+JS client 应该暴露与其他运行时一致的抽象：注册 capability handlers、建立连接、处理路由调用、返回结果。
 
-## Build Outputs
+## 构建产物
 
-The client package now emits:
+当前 client package 会产出：
 
-- ESM SDK files under `packages/client/dist/*.js`
-- a browser global bundle at `packages/client/dist/modeldriveprotocol-client.global.js`
+- 位于 `packages/client/dist/*.js` 下的 ESM SDK 文件
+- 浏览器全局 bundle `packages/client/dist/modeldriveprotocol-client.global.js`
 
-The global bundle attaches `MDP` to `window`, so a plain browser page can use:
+这个全局 bundle 会把 `MDP` 挂到 `window` 上，因此普通浏览器页面可以直接这样使用：
 
 ```html
 <script src="/assets/modeldriveprotocol-client.global.js"></script>
@@ -37,7 +37,7 @@ The global bundle attaches `MDP` to `window`, so a plain browser page can use:
 </script>
 ```
 
-## ESM Usage
+## ESM 用法
 
 ```ts
 import { createMdpClient } from "@modeldriveprotocol/client";
@@ -58,7 +58,7 @@ await client.connect();
 client.register();
 ```
 
-## Browser Global Usage
+## 浏览器全局用法
 
 ```html
 <script src="/assets/modeldriveprotocol-client.global.js"></script>

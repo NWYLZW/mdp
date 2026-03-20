@@ -1,7 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 
-import type { CallClientResultMessage } from "@mdp/protocol";
+import type { CallClientResultMessage } from "@modeldriveprotocol/protocol";
 
 import type { MdpServerRuntime } from "./mdp-server.js";
 
@@ -17,7 +17,7 @@ const callClientsSchema = {
 
 export function createMcpBridge(runtime: MdpServerRuntime): McpServer {
   const server = new McpServer({
-    name: "mdp-server",
+    name: "modeldriveprotocol-server",
     version: "0.1.0"
   });
 

@@ -1,4 +1,8 @@
-import { createSerializedError, isMdpMessage, type CallClientMessage } from "@mdp/protocol";
+import {
+  createSerializedError,
+  isMdpMessage,
+  type CallClientMessage
+} from "@modeldriveprotocol/protocol";
 
 import { ProcedureRegistry } from "./procedure-registry.js";
 import type {
