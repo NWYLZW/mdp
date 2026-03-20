@@ -51,12 +51,19 @@
     <script src="../../assets/modeldriveprotocol-client.global.js"></script>
     <script>
       const status = document.getElementById("status");
+      const serverUrl =
+        new URLSearchParams(window.location.search).get("serverUrl") ??
+        "ws://127.0.0.1:7070";
 
       const client = MDP.createMdpClient({
-        serverUrl: "http://127.0.0.1:7070",
-        auth: {
-          token: "browser-example-token"
-        },
+        serverUrl,
+        ...(serverUrl.startsWith("http")
+          ? {
+              auth: {
+                token: "browser-example-token"
+              }
+            }
+          : {}),
         client: {
           id: "browser-example",
           name: "Browser Example Client",
@@ -85,7 +92,9 @@
       (async () => {
         await client.connect();
         client.register();
-        status.textContent = "Connected to http://127.0.0.1:7070 in HTTP loop mode and registered.";
+        status.textContent =
+          `Connected to ${serverUrl}. ` +
+          "Use ?serverUrl=ws://127.0.0.1:7070 or ?serverUrl=http://127.0.0.1:7070.";
       })().catch((error) => {
         status.textContent = String(error);
       });

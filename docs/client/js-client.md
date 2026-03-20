@@ -33,10 +33,7 @@ The global bundle attaches `MDP` to `window`, so a plain browser page can use:
 <script src="/assets/modeldriveprotocol-client.global.js"></script>
 <script>
   const client = MDP.createMdpClient({
-    serverUrl: "http://127.0.0.1:7070",
-    auth: {
-      token: "client-session-token"
-    },
+    serverUrl: "ws://127.0.0.1:7070",
     client: {
       id: "browser-01",
       name: "Browser Client"
@@ -47,14 +44,13 @@ The global bundle attaches `MDP` to `window`, so a plain browser page can use:
 
 ## ESM Usage
 
+### WebSocket
+
 ```ts
 import { createMdpClient } from "@modeldriveprotocol/client";
 
 const client = createMdpClient({
-  serverUrl: "http://127.0.0.1:7070",
-  auth: {
-    token: "client-session-token"
-  },
+  serverUrl: "ws://127.0.0.1:7070",
   client: {
     id: "browser-01",
     name: "Browser Client"
@@ -73,13 +69,35 @@ await client.connect();
 client.register();
 ```
 
+### HTTP Loop
+
+```ts
+import { createMdpClient } from "@modeldriveprotocol/client";
+
+const client = createMdpClient({
+  serverUrl: "http://127.0.0.1:7070",
+  auth: {
+    token: "client-session-token"
+  },
+  client: {
+    id: "browser-01",
+    name: "Browser Client"
+  }
+});
+
+await client.connect();
+client.register();
+```
+
 ## Browser Global Usage
+
+### WebSocket
 
 ```html
 <script src="/assets/modeldriveprotocol-client.global.js"></script>
 <script>
   const client = MDP.createMdpClient({
-    serverUrl: "https://127.0.0.1:7070",
+    serverUrl: "wss://127.0.0.1:7070",
     client: {
       id: "browser-01",
       name: "Browser Client"
@@ -91,6 +109,27 @@ client.register();
     matches: document.body.innerText.includes(query) ? 1 : 0,
     authToken: context.auth?.token
   }));
+
+  await client.connect();
+  client.register();
+</script>
+```
+
+### HTTP Loop
+
+```html
+<script src="/assets/modeldriveprotocol-client.global.js"></script>
+<script>
+  const client = MDP.createMdpClient({
+    serverUrl: "https://127.0.0.1:7070",
+    auth: {
+      token: "client-session-token"
+    },
+    client: {
+      id: "browser-01",
+      name: "Browser Client"
+    }
+  });
 
   await client.connect();
   client.register();

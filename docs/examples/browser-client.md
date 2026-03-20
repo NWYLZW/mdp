@@ -16,6 +16,8 @@ This is the simplest path for proving the bridge model end to end.
 
 ## Minimal HTML Example
 
+### WebSocket
+
 ```html
 <!doctype html>
 <html>
@@ -28,10 +30,7 @@ This is the simplest path for proving the bridge model end to end.
     <script src="/assets/modeldriveprotocol-client.global.js"></script>
     <script>
       const client = MDP.createMdpClient({
-        serverUrl: "http://127.0.0.1:7070",
-        auth: {
-          token: "browser-session-token"
-        },
+        serverUrl: "ws://127.0.0.1:7070",
         client: {
           id: "browser-01",
           name: "Browser Client"
@@ -55,6 +54,32 @@ This is the simplest path for proving the bridge model end to end.
           mimeType: "text/plain"
         }
       );
+
+      await client.connect();
+      client.register();
+    </script>
+  </body>
+</html>
+```
+
+### HTTP Loop
+
+```html
+<!doctype html>
+<html>
+  <body>
+    <script src="/assets/modeldriveprotocol-client.global.js"></script>
+    <script>
+      const client = MDP.createMdpClient({
+        serverUrl: "http://127.0.0.1:7070",
+        auth: {
+          token: "browser-session-token"
+        },
+        client: {
+          id: "browser-01",
+          name: "Browser Client"
+        }
+      });
 
       await client.connect();
       client.register();

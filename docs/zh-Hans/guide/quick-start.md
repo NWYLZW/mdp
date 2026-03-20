@@ -33,6 +33,25 @@ node packages/server/dist/cli.js --port 7070 --tls-key ./certs/server-key.pem --
 
 然后创建并注册一个 client：
 
+WebSocket 示例：
+
+```html
+<script>
+  const client = MDP.createMdpClient({
+    serverUrl: "ws://127.0.0.1:7070",
+    client: {
+      id: "browser-01",
+      name: "Browser Client"
+    }
+  });
+
+  await client.connect();
+  client.register();
+</script>
+```
+
+HTTP loop 示例：
+
 ```html
 <script>
   const client = MDP.createMdpClient({
@@ -63,6 +82,8 @@ MVP 当前仍然建议这条路径：
 - 面向 socket 会话的 `ws://` / `wss://`
 - 面向 HTTP loop 模式的 `http://` / `https://`
 
-上面的快速路径默认走 HTTP loop，因为它同时适合浏览器和偏请求响应的运行时。如果你需要安全的 socket 会话，可以改用 `wss://`。
+需要直接双向会话时，用 `ws://` / `wss://`。
+
+运行时更偏请求响应轮询，或者希望明确通过 HTTP headers 携带认证信息时，用 `http://` / `https://`。
 
 运行时仍然使用内存 registry，但 transport 已经可以变化，而不影响 MCP bridge 契约。

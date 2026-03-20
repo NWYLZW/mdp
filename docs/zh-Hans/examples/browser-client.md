@@ -16,6 +16,8 @@ status: MVP
 
 ## 最小 HTML 示例
 
+### WebSocket
+
 ```html
 <!doctype html>
 <html>
@@ -28,10 +30,7 @@ status: MVP
     <script src="/assets/modeldriveprotocol-client.global.js"></script>
     <script>
       const client = MDP.createMdpClient({
-        serverUrl: "http://127.0.0.1:7070",
-        auth: {
-          token: "browser-session-token"
-        },
+        serverUrl: "ws://127.0.0.1:7070",
         client: {
           id: "browser-01",
           name: "Browser Client"
@@ -55,6 +54,32 @@ status: MVP
           mimeType: "text/plain"
         }
       );
+
+      await client.connect();
+      client.register();
+    </script>
+  </body>
+</html>
+```
+
+### HTTP Loop
+
+```html
+<!doctype html>
+<html>
+  <body>
+    <script src="/assets/modeldriveprotocol-client.global.js"></script>
+    <script>
+      const client = MDP.createMdpClient({
+        serverUrl: "http://127.0.0.1:7070",
+        auth: {
+          token: "browser-session-token"
+        },
+        client: {
+          id: "browser-01",
+          name: "Browser Client"
+        }
+      });
 
       await client.connect();
       client.register();

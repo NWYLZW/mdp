@@ -31,7 +31,26 @@ For a browser-first path, load the generated bundle:
 <script src="/assets/modeldriveprotocol-client.global.js"></script>
 ```
 
-Then create and register a client:
+Then create and register a client.
+
+WebSocket example:
+
+```html
+<script>
+  const client = MDP.createMdpClient({
+    serverUrl: "ws://127.0.0.1:7070",
+    client: {
+      id: "browser-01",
+      name: "Browser Client"
+    }
+  });
+
+  await client.connect();
+  client.register();
+</script>
+```
+
+HTTP loop example:
 
 ```html
 <script>
@@ -63,6 +82,8 @@ Current reference transport choices are:
 - `ws://` / `wss://` for socket sessions
 - `http://` / `https://` for HTTP loop mode
 
-The quick path above uses HTTP loop because it works well in browser and request/response-first runtimes. Use `wss://` when you want a secure socket session instead.
+Use `ws://` / `wss://` when you want a direct bidirectional session.
+
+Use `http://` / `https://` when the runtime prefers request/response polling or when you want to carry auth with explicit HTTP headers.
 
 The runtime still keeps an in-memory registry. Transport can now vary without changing the MCP bridge contract.

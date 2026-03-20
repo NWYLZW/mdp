@@ -33,10 +33,7 @@ JS client 应该暴露与其他运行时一致的抽象：注册 capability hand
 <script src="/assets/modeldriveprotocol-client.global.js"></script>
 <script>
   const client = MDP.createMdpClient({
-    serverUrl: "http://127.0.0.1:7070",
-    auth: {
-      token: "client-session-token"
-    },
+    serverUrl: "ws://127.0.0.1:7070",
     client: {
       id: "browser-01",
       name: "Browser Client"
@@ -47,14 +44,13 @@ JS client 应该暴露与其他运行时一致的抽象：注册 capability hand
 
 ## ESM 用法
 
+### WebSocket
+
 ```ts
 import { createMdpClient } from "@modeldriveprotocol/client";
 
 const client = createMdpClient({
-  serverUrl: "http://127.0.0.1:7070",
-  auth: {
-    token: "client-session-token"
-  },
+  serverUrl: "ws://127.0.0.1:7070",
   client: {
     id: "browser-01",
     name: "Browser Client"
@@ -73,13 +69,35 @@ await client.connect();
 client.register();
 ```
 
+### HTTP Loop
+
+```ts
+import { createMdpClient } from "@modeldriveprotocol/client";
+
+const client = createMdpClient({
+  serverUrl: "http://127.0.0.1:7070",
+  auth: {
+    token: "client-session-token"
+  },
+  client: {
+    id: "browser-01",
+    name: "Browser Client"
+  }
+});
+
+await client.connect();
+client.register();
+```
+
 ## 浏览器全局用法
+
+### WebSocket
 
 ```html
 <script src="/assets/modeldriveprotocol-client.global.js"></script>
 <script>
   const client = MDP.createMdpClient({
-    serverUrl: "https://127.0.0.1:7070",
+    serverUrl: "wss://127.0.0.1:7070",
     client: {
       id: "browser-01",
       name: "Browser Client"
@@ -91,6 +109,27 @@ client.register();
     matches: document.body.innerText.includes(query) ? 1 : 0,
     authToken: context.auth?.token
   }));
+
+  await client.connect();
+  client.register();
+</script>
+```
+
+### HTTP Loop
+
+```html
+<script src="/assets/modeldriveprotocol-client.global.js"></script>
+<script>
+  const client = MDP.createMdpClient({
+    serverUrl: "https://127.0.0.1:7070",
+    auth: {
+      token: "client-session-token"
+    },
+    client: {
+      id: "browser-01",
+      name: "Browser Client"
+    }
+  });
 
   await client.connect();
   client.register();
