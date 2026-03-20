@@ -73,3 +73,7 @@ flowchart LR
 - [协议概览](./docs/zh-Hans/protocol/overview.md)
 - [MCP Bridge](./docs/zh-Hans/protocol/mcp-bridge.md)
 - [嵌入其他运行时](./docs/zh-Hans/client/embedding.md)
+
+## 开发者说明
+
+贡献流程、发布自动化和维护者配置请查看 [DEVELOPING.md](./DEVELOPING.md)。

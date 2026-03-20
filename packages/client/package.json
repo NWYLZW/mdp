@@ -4,6 +4,11 @@
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NWYLZW/mdp.git",
+    "directory": "packages/client"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -20,6 +25,10 @@
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "dependencies": {
     "@modeldriveprotocol/protocol": "workspace:*"
   },

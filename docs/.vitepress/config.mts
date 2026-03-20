@@ -38,6 +38,7 @@ interface LocaleCopy {
     jsClient: string;
     embedding: string;
     browserClient: string;
+    playground: string;
     nativeClient: string;
     endToEnd: string;
     glossary: string;
@@ -91,6 +92,7 @@ const enUS: LocaleCopy = {
     jsClient: "JS Client",
     embedding: "Embedding",
     browserClient: "Browser Client",
+    playground: "Playground",
     nativeClient: "Native Client",
     endToEnd: "End-to-End",
     glossary: "Glossary",
@@ -142,6 +144,7 @@ const zhHans: LocaleCopy = {
     jsClient: "JS 客户端",
     embedding: "嵌入方式",
     browserClient: "浏览器客户端",
+    playground: "Playground",
     nativeClient: "原生客户端",
     endToEnd: "端到端",
     glossary: "术语表",
@@ -249,6 +252,7 @@ function createThemeConfig(prefix: LocalePrefix, copy: LocaleCopy): DefaultTheme
         {
           text: copy.sections.examples,
           items: [
+            { text: copy.pages.playground, link: localePath(prefix, "/examples/playground") },
             { text: copy.pages.browserClient, link: localePath(prefix, "/examples/browser-client") },
             { text: copy.pages.nativeClient, link: localePath(prefix, "/examples/native-client") },
             { text: copy.pages.endToEnd, link: localePath(prefix, "/examples/end-to-end") }

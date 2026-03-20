@@ -4,23 +4,28 @@
   "packageManager": "pnpm@10.28.0",
   "scripts": {
     "build": "pnpm --filter @modeldriveprotocol/protocol build && pnpm --filter @modeldriveprotocol/client build && pnpm --filter @modeldriveprotocol/server build",
+    "changeset": "changeset",
     "clean": "node scripts/clean.mjs",
+    "publish:packages": "changeset publish",
+    "release": "pnpm build && pnpm publish:packages",
     "typecheck": "tsc -b tsconfig.json --pretty false",
     "test": "pnpm test:unit && pnpm test:smoke",
     "test:unit": "vitest run",
     "test:smoke": "node scripts/smoke-test.mjs",
     "test:watch": "vitest",
+    "version-packages": "changeset version",
     "docs:dev": "node scripts/prepare-docs.mjs && vitepress dev docs",
     "docs:build": "node scripts/prepare-docs.mjs && vitepress build docs",
     "docs:preview": "vitepress preview docs"
   },
   "devDependencies": {
-    "esbuild": "^0.25.12",
+    "@changesets/cli": "^2.30.0",
     "@modelcontextprotocol/sdk": "^1.27.1",
     "@types/node": "^24.0.0",
+    "esbuild": "^0.25.12",
     "jsdom": "^26.1.0",
     "typescript": "^5.9.3",
-    "vitest": "^3.2.4",
-    "vitepress": "^1.6.4"
+    "vitepress": "^1.6.4",
+    "vitest": "^3.2.4"
   }
 }

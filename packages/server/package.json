@@ -4,6 +4,11 @@
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NWYLZW/mdp.git",
+    "directory": "packages/server"
+  },
   "bin": {
     "modeldriveprotocol-server": "./dist/cli.js"
   },
@@ -16,6 +21,10 @@
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "dependencies": {
     "@modeldriveprotocol/protocol": "workspace:*",
     "@modelcontextprotocol/sdk": "^1.17.4",

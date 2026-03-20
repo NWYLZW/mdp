@@ -4,6 +4,11 @@
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NWYLZW/mdp.git",
+    "directory": "packages/protocol"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -13,6 +18,10 @@
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "scripts": {
     "build": "tsc -b",
     "clean": "node ../../scripts/clean.mjs",

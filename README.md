@@ -73,3 +73,7 @@ Use the docs for getting started and protocol details:
 - [Protocol Overview](./docs/protocol/overview.md)
 - [MCP Bridge](./docs/protocol/mcp-bridge.md)
 - [Embedding Other Runtimes](./docs/client/embedding.md)
+
+## Development
+
+For contributor workflow, release automation, and maintainer setup, see [DEVELOPING.md](./DEVELOPING.md).
