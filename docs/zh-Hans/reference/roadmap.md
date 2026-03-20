@@ -13,7 +13,7 @@ status: Draft
 - 一个带浏览器 bundle 的 TypeScript client SDK
 - 一组 `ws` / `wss` 与 `http` / `https loop` 的 MDP transports
 - 一组固定的 MCP bridge surface
-- 注册与调用阶段的 auth envelopes，以及 server 侧 authorization hooks
+- 注册与调用阶段的 auth envelopes、transport-carried auth，以及 server 侧 authorization hooks
 - 一个能验证端到端链路的 smoke test
 
 ## 指导方向

@@ -32,6 +32,7 @@ async function main(): Promise<void> {
   const endpoints = transportServer.endpoints;
   console.error(`MDP server listening on ${endpoints.ws}`);
   console.error(`MDP HTTP loop endpoint listening on ${endpoints.httpLoop}`);
+  console.error(`MDP auth endpoint listening on ${endpoints.auth}`);
 
   const shutdown = async () => {
     await Promise.allSettled([mcpServer.close(), transportServer.stop()]);

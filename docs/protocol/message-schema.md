@@ -25,6 +25,8 @@ The MDP transport should support a small message set:
 
 `registerClient` may also include an optional `auth` envelope when the client wants to attach message-level credentials to its registration.
 
+Transport auth is out-of-band. The reference server can also record auth from request headers, cookies, or from a `/mdp/auth` cookie bootstrap that runs before a `ws` / `wss` connection is opened.
+
 The result should include:
 
 - `ok`

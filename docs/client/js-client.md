@@ -20,6 +20,8 @@ Transport selection is scheme-based by default:
 - `ws://` or `wss://` uses the WebSocket transport
 - `http://` or `https://` uses HTTP loop mode
 
+For browser-side `ws` / `wss` auth, passing `auth` is enough. `connect()` will automatically `POST` to `/mdp/auth` on the matching `http` / `https` origin before opening the socket.
+
 ## Build Outputs
 
 The client package now emits:
@@ -78,6 +80,26 @@ await client.connect();
 client.register();
 ```
 
+### Authenticated WebSocket
+
+```ts
+import { createMdpClient } from "@modeldriveprotocol/client";
+
+const client = createMdpClient({
+  serverUrl: "wss://127.0.0.1:7070",
+  auth: {
+    token: "client-session-token"
+  },
+  client: {
+    id: "browser-01",
+    name: "Browser Client"
+  }
+});
+
+await client.connect();
+client.register();
+```
+
 ### HTTP Loop
 
 ```ts
@@ -113,6 +135,9 @@ client.register();
 
     const client = MDP.createMdpClient({
       serverUrl: "wss://127.0.0.1:7070",
+      auth: {
+        token: "client-session-token"
+      },
       client: {
         id: "browser-01",
         name: document.title || "Browser Client"
@@ -171,4 +196,4 @@ client.register();
 </script>
 ```
 
-If you need to rotate registration credentials after construction, call `client.setAuth(...)` before the next `register()`.
+If you need to rotate registration credentials after construction, call `client.setAuth(...)` before the next `register()`. For `ws` / `wss`, reconnecting will automatically refresh the auth cookie bootstrap.

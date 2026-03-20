@@ -13,6 +13,7 @@ import {
 import type { Duplex } from "node:stream";
 
 import {
+  isJsonObject,
   isMdpMessage,
   type AuthContext,
   type ClientToServerMessage,
@@ -25,8 +26,11 @@ import { ClientSession, type ClientSessionTransport } from "./client-session.js"
 import { MdpServerRuntime } from "./mdp-server.js";
 
 const DEFAULT_HTTP_LOOP_PATH = "/mdp/http-loop";
+const DEFAULT_AUTH_PATH = "/mdp/auth";
 const DEFAULT_LONG_POLL_TIMEOUT_MS = 25_000;
 const DEFAULT_AUTH_HEADERS = ["authorization", "cookie"];
+const DEFAULT_AUTH_COOKIE_NAME = "mdp_auth";
+const DEFAULT_AUTH_COOKIE_MAX_AGE_SECONDS = 3_600;
 const SESSION_HEADER = "x-mdp-session-id";
 
 type NodeHttpServer = HttpServer | HttpsServer;
@@ -40,9 +44,12 @@ export interface MdpTransportServerOptions {
   host?: string;
   port?: number;
   httpLoopPath?: string;
+  authPath?: string;
   longPollTimeoutMs?: number;
   tls?: HttpsServerOptions;
   authHeaders?: string[];
+  authCookieName?: string;
+  authCookieMaxAgeSeconds?: number;
 }
 
 export class MdpTransportServer {
@@ -50,8 +57,11 @@ export class MdpTransportServer {
   private readonly port: number;
   private readonly secure: boolean;
   private readonly httpLoopPath: string;
+  private readonly authPath: string;
   private readonly longPollTimeoutMs: number;
   private readonly authHeaders: string[];
+  private readonly authCookieName: string;
+  private readonly authCookieMaxAgeSeconds: number;
   private readonly httpServer: NodeHttpServer;
   private readonly wsServer = new WebSocketServer({ noServer: true });
   private readonly httpLoopSessions = new Map<string, HttpLoopSessionEntry>();
@@ -66,11 +76,15 @@ export class MdpTransportServer {
     this.httpLoopPath = trimTrailingSlash(
       options.httpLoopPath ?? DEFAULT_HTTP_LOOP_PATH
     );
+    this.authPath = trimTrailingSlash(options.authPath ?? DEFAULT_AUTH_PATH);
     this.longPollTimeoutMs =
       options.longPollTimeoutMs ?? DEFAULT_LONG_POLL_TIMEOUT_MS;
     this.authHeaders = (options.authHeaders ?? DEFAULT_AUTH_HEADERS).map((header) =>
       header.toLowerCase()
     );
+    this.authCookieName = options.authCookieName ?? DEFAULT_AUTH_COOKIE_NAME;
+    this.authCookieMaxAgeSeconds =
+      options.authCookieMaxAgeSeconds ?? DEFAULT_AUTH_COOKIE_MAX_AGE_SECONDS;
 
     const requestHandler = this.handleRequest.bind(this);
 
@@ -137,14 +151,15 @@ export class MdpTransportServer {
     };
   }
 
-  get endpoints(): { ws: string; httpLoop: string } {
+  get endpoints(): { ws: string; httpLoop: string; auth: string } {
     const { host, port } = this.address;
     const wsProtocol = this.isSecure ? "wss" : "ws";
     const httpProtocol = this.isSecure ? "https" : "http";
 
     return {
       ws: `${wsProtocol}://${host}:${port}`,
-      httpLoop: `${httpProtocol}://${host}:${port}${this.httpLoopPath}`
+      httpLoop: `${httpProtocol}://${host}:${port}${this.httpLoopPath}`,
+      auth: `${httpProtocol}://${host}:${port}${this.authPath}`
     };
   }
 
@@ -157,7 +172,7 @@ export class MdpTransportServer {
     socket: Duplex,
     head: Buffer
   ): Promise<void> {
-    if (this.isHttpLoopRequest(request)) {
+    if (this.isHttpLoopRequest(request) || this.isAuthRequest(request)) {
       socket.destroy();
       return;
     }
@@ -207,13 +222,18 @@ export class MdpTransportServer {
   ): Promise<void> {
     const url = this.requestUrl(request);
 
+    if (url.pathname === this.authPath) {
+      await this.handleAuthRequest(request, response);
+      return;
+    }
+
     if (!url.pathname.startsWith(this.httpLoopPath)) {
       response.statusCode = 404;
       response.end();
       return;
     }
 
-    this.applyHttpLoopCors(request, response);
+    this.applyCors(request, response);
 
     try {
       if (request.method === "OPTIONS") {
@@ -254,6 +274,40 @@ export class MdpTransportServer {
     }
   }
 
+  private async handleAuthRequest(
+    request: IncomingMessage,
+    response: ServerResponse
+  ): Promise<void> {
+    this.applyCors(request, response, true);
+
+    try {
+      if (request.method === "OPTIONS") {
+        response.statusCode = 204;
+        response.end();
+        return;
+      }
+
+      if (request.method === "POST") {
+        await this.handleAuthCookieIssue(request, response);
+        return;
+      }
+
+      if (request.method === "DELETE") {
+        this.clearAuthCookie(response, this.isSecureRequest(request));
+        response.statusCode = 204;
+        response.end();
+        return;
+      }
+
+      response.statusCode = 404;
+      response.end();
+    } catch (error) {
+      this.writeJson(response, 400, {
+        error: error instanceof Error ? error.message : "Invalid auth request"
+      });
+    }
+  }
+
   private async handleHttpLoopConnect(
     request: IncomingMessage,
     response: ServerResponse
@@ -280,6 +334,33 @@ export class MdpTransportServer {
     this.writeJson(response, 200, {
       sessionId: connectionId
     });
+  }
+
+  private async handleAuthCookieIssue(
+    request: IncomingMessage,
+    response: ServerResponse
+  ): Promise<void> {
+    const body = await readJsonBody(request);
+    const auth =
+      (isJsonObject(body) && "auth" in body ? asAuthContext(body.auth) : undefined) ??
+      this.extractTransportAuth(request);
+
+    if (!auth) {
+      throw new Error("Auth endpoint requires an auth context");
+    }
+
+    response.setHeader(
+      "set-cookie",
+      serializeAuthCookie({
+        auth,
+        secure: this.isSecureRequest(request),
+        name: this.authCookieName,
+        maxAgeSeconds: this.authCookieMaxAgeSeconds
+      })
+    );
+    response.setHeader("cache-control", "no-store");
+    response.statusCode = 204;
+    response.end();
   }
 
   private async handleHttpLoopSend(
@@ -388,9 +469,10 @@ export class MdpTransportServer {
     response.end(JSON.stringify(payload));
   }
 
-  private applyHttpLoopCors(
+  private applyCors(
     request: IncomingMessage,
-    response: ServerResponse
+    response: ServerResponse,
+    allowDelete = false
   ): void {
     const origin = request.headers.origin;
 
@@ -408,7 +490,10 @@ export class MdpTransportServer {
         ? requestedHeaders
         : defaultCorsAllowedHeaders(this.authHeaders);
 
-    response.setHeader("access-control-allow-methods", "GET, POST, OPTIONS");
+    response.setHeader(
+      "access-control-allow-methods",
+      allowDelete ? "GET, POST, DELETE, OPTIONS" : "GET, POST, OPTIONS"
+    );
     response.setHeader("access-control-allow-headers", allowHeaders);
   }
 
@@ -423,6 +508,10 @@ export class MdpTransportServer {
 
   private isHttpLoopRequest(request: IncomingMessage): boolean {
     return this.requestUrl(request).pathname.startsWith(this.httpLoopPath);
+  }
+
+  private isAuthRequest(request: IncomingMessage): boolean {
+    return this.requestUrl(request).pathname === this.authPath;
   }
 
   private isSecureRequest(request: IncomingMessage): boolean {
@@ -455,7 +544,8 @@ export class MdpTransportServer {
     }
 
     const authorization = headers.authorization;
-    const auth: AuthContext = {};
+    const cookieAuth = readAuthCookie(headers.cookie, this.authCookieName);
+    const auth: AuthContext = cookieAuth ? { ...cookieAuth } : {};
 
     if (authorization) {
       const [scheme, ...tokenParts] = authorization.split(/\s+/);
@@ -468,11 +558,24 @@ export class MdpTransportServer {
       }
     }
 
-    if (Object.keys(headers).length > 0) {
-      auth.headers = headers;
+    const combinedHeaders = {
+      ...(auth.headers ?? {}),
+      ...headers
+    };
+
+    if (Object.keys(combinedHeaders).length > 0) {
+      auth.headers = combinedHeaders;
     }
 
     return Object.keys(auth).length > 0 ? auth : undefined;
+  }
+
+  private clearAuthCookie(response: ServerResponse, secure: boolean): void {
+    response.setHeader(
+      "set-cookie",
+      serializeClearedAuthCookie(this.authCookieName, secure)
+    );
+    response.setHeader("cache-control", "no-store");
   }
 }
 
@@ -685,4 +788,97 @@ function appendVaryHeader(response: ServerResponse, value: string): void {
   }
 
   response.setHeader("vary", values.join(", "));
+}
+
+function asAuthContext(value: unknown): AuthContext | undefined {
+  if (!isJsonObject(value)) {
+    return undefined;
+  }
+
+  if (
+    ("scheme" in value && typeof value.scheme !== "string") ||
+    ("token" in value && typeof value.token !== "string") ||
+    ("headers" in value && !isStringMap(value.headers)) ||
+    ("metadata" in value && !isJsonObject(value.metadata))
+  ) {
+    return undefined;
+  }
+
+  return value as AuthContext;
+}
+
+function isStringMap(value: unknown): value is Record<string, string> {
+  return (
+    isJsonObject(value) &&
+    Object.values(value).every((entry) => typeof entry === "string")
+  );
+}
+
+function serializeAuthCookie(options: {
+  auth: AuthContext;
+  secure: boolean;
+  name: string;
+  maxAgeSeconds: number;
+}): string {
+  const value = Buffer.from(JSON.stringify(options.auth)).toString("base64url");
+
+  return [
+    `${options.name}=${value}`,
+    "Path=/",
+    `Max-Age=${options.maxAgeSeconds}`,
+    "HttpOnly",
+    "SameSite=Lax",
+    ...(options.secure ? ["Secure"] : [])
+  ].join("; ");
+}
+
+function serializeClearedAuthCookie(name: string, secure: boolean): string {
+  return [
+    `${name}=`,
+    "Path=/",
+    "Max-Age=0",
+    "HttpOnly",
+    "SameSite=Lax",
+    ...(secure ? ["Secure"] : [])
+  ].join("; ");
+}
+
+function readAuthCookie(
+  cookieHeader: string | undefined,
+  cookieName: string
+): AuthContext | undefined {
+  if (!cookieHeader) {
+    return undefined;
+  }
+
+  const cookieValue = parseCookieHeader(cookieHeader)[cookieName];
+
+  if (!cookieValue) {
+    return undefined;
+  }
+
+  try {
+    return asAuthContext(
+      JSON.parse(Buffer.from(cookieValue, "base64url").toString("utf8"))
+    );
+  } catch {
+    return undefined;
+  }
+}
+
+function parseCookieHeader(cookieHeader: string): Record<string, string> {
+  const cookies: Record<string, string> = {};
+
+  for (const entry of cookieHeader.split(";")) {
+    const [rawName, ...rawValueParts] = entry.split("=");
+    const name = rawName?.trim();
+
+    if (!name) {
+      continue;
+    }
+
+    cookies[name] = rawValueParts.join("=").trim();
+  }
+
+  return cookies;
 }

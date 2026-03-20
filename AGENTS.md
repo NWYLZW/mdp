@@ -240,6 +240,7 @@ As of the current MVP:
 - the server is a registry and invocation router, not the capability owner
 - registration and invocation messages may carry auth envelopes
 - transport requests may also carry auth headers for server-side policy
+- browser `ws` / `wss` clients may bootstrap transport auth through `/mdp/auth` cookie issuance
 
 If you change any of those assumptions, update:
 

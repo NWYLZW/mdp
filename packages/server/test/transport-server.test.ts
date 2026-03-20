@@ -278,6 +278,81 @@ describe("MdpTransportServer", () => {
     socket.close();
     await waitForClose(socket);
   });
+
+  it("issues auth cookies that websocket clients can reuse", async () => {
+    const authorizeRegistration = vi.fn();
+    const runtime = new MdpServerRuntime({
+      authorizeRegistration
+    });
+    const server = new MdpTransportServer(runtime, {
+      host: "127.0.0.1",
+      port: 0
+    });
+    servers.push(server);
+    await server.start();
+
+    const authResponse = await fetch(server.endpoints.auth, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json"
+      },
+      body: JSON.stringify({
+        auth: {
+          scheme: "Bearer",
+          token: "cookie-token",
+          metadata: {
+            source: "auth-endpoint"
+          }
+        }
+      })
+    });
+    const cookieHeader = readSetCookieHeader(authResponse);
+
+    expect(authResponse.status).toBe(204);
+    expect(cookieHeader).toContain("mdp_auth=");
+
+    const socket = new WebSocket(server.endpoints.ws, {
+      headers: {
+        cookie: cookieHeader.split(";")[0] as string
+      }
+    });
+
+    await waitForOpen(socket);
+
+    socket.send(
+      JSON.stringify({
+        type: "registerClient",
+        client: registeredClient
+      })
+    );
+
+    await vi.waitFor(() => {
+      expect(authorizeRegistration).toHaveBeenCalledWith(
+        expect.objectContaining({
+          transportAuth: expect.objectContaining({
+            scheme: "Bearer",
+            token: "cookie-token",
+            metadata: {
+              source: "auth-endpoint"
+            }
+          })
+        })
+      );
+      expect(runtime.listClients()).toEqual([
+        expect.objectContaining({
+          id: "client-01",
+          connection: {
+            mode: "ws",
+            secure: false,
+            authSource: "transport"
+          }
+        })
+      ]);
+    });
+
+    socket.close();
+    await waitForClose(socket);
+  });
 });
 
 async function waitForOpen(socket: WebSocket): Promise<void> {
@@ -291,4 +366,14 @@ async function waitForClose(socket: WebSocket): Promise<void> {
   await new Promise<void>((resolve) => {
     socket.once("close", () => resolve());
   });
+}
+
+function readSetCookieHeader(response: Response): string {
+  const fromSpecializedAccessor =
+    "getSetCookie" in response.headers &&
+    typeof response.headers.getSetCookie === "function"
+      ? response.headers.getSetCookie()[0]
+      : undefined;
+
+  return fromSpecializedAccessor ?? response.headers.get("set-cookie") ?? "";
 }

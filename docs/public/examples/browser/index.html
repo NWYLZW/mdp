@@ -51,9 +51,11 @@
     <script src="https://cdn.jsdelivr.net/npm/@modeldriveprotocol/client@latest/dist/modeldriveprotocol-client.global.js"></script>
     <script>
       const status = document.getElementById("status");
-      const serverUrl =
-        new URLSearchParams(window.location.search).get("serverUrl") ??
-        "ws://127.0.0.1:7070";
+      const params = new URLSearchParams(window.location.search);
+      const serverUrl = params.get("serverUrl") ?? "ws://127.0.0.1:7070";
+      const authToken =
+        params.get("authToken") ??
+        (serverUrl.startsWith("http") ? "browser-example-token" : undefined);
       const readPageInfo = () => ({
         title: document.title,
         url: window.location.href,
@@ -63,10 +65,10 @@
 
       const client = MDP.createMdpClient({
         serverUrl,
-        ...(serverUrl.startsWith("http")
+        ...(authToken
           ? {
               auth: {
-                token: "browser-example-token"
+                token: authToken
               }
             }
           : {}),
@@ -119,7 +121,7 @@
         client.register();
         status.textContent =
           `Connected to ${serverUrl}. ` +
-          "Use ?serverUrl=ws://127.0.0.1:7070 or ?serverUrl=http://127.0.0.1:7070.";
+          "Use ?serverUrl=ws://127.0.0.1:7070&authToken=browser-example-token or ?serverUrl=http://127.0.0.1:7070.";
       })().catch((error) => {
         status.textContent = String(error);
       });

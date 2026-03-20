@@ -18,6 +18,7 @@ Baseline concerns:
 The current implementation keeps this lightweight but concrete:
 
 - transports may carry auth headers such as `Authorization`, `Cookie`, or `x-mdp-auth-*`
+- the transport server can also issue an `HttpOnly` auth cookie at `/mdp/auth` for browser `ws` / `wss` bootstrap
 - `registerClient.auth` lets a client send a message-level auth envelope
 - `callClient.auth` lets the server or host downlink invocation auth context to a client
 - server runtime options can enforce registration and invocation authorization hooks

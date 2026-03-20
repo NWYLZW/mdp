@@ -4,16 +4,11 @@ import {
   type ServerToClientMessage
 } from "@modeldriveprotocol/protocol";
 
-import type { ClientTransport } from "./types.js";
+import type { ClientTransport, FetchLike } from "./types.js";
 
 const DEFAULT_HTTP_LOOP_PATH = "/mdp/http-loop";
 const DEFAULT_POLL_WAIT_MS = 25_000;
 const SESSION_HEADER = "x-mdp-session-id";
-
-export type FetchLike = (
-  input: RequestInfo | URL,
-  init?: RequestInit
-) => Promise<Response>;
 
 export interface HttpLoopClientTransportOptions {
   endpointPath?: string;

@@ -49,6 +49,7 @@ Current transport support includes:
 - `ws` / `wss` for bidirectional socket sessions
 - `http` / `https` loop mode for long-polling runtimes
 - auth envelopes on client registration and routed invocation messages
+- transport auth via request headers or cookie bootstrap at `/mdp/auth`
 
 ## Architecture
 

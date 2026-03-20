@@ -10,6 +10,7 @@ import { ProcedureRegistry } from "./procedure-registry.js";
 import type {
   BrowserScriptClientAttributes,
   CapabilityHandler,
+  ClientTransportAuthOptions,
   ClientDescriptorOverride,
   ClientInfo,
   ExposePromptOptions,
@@ -22,16 +23,24 @@ import type {
 import { WebSocketClientTransport } from "./ws-client.js";
 
 export class MdpClient {
+  private readonly serverUrl: string;
+  private readonly serverProtocol: string;
+  private readonly usesDefaultTransport: boolean;
   private clientInfo: ClientInfo;
   private readonly registry = new ProcedureRegistry();
   private readonly transport: ClientTransport;
+  private readonly transportAuth: ClientTransportAuthOptions | undefined;
   private auth: AuthContext | undefined;
   private connected = false;
   private registered = false;
 
   constructor(options: MdpClientOptions) {
+    this.serverUrl = options.serverUrl;
+    this.serverProtocol = new URL(options.serverUrl).protocol;
+    this.usesDefaultTransport = options.transport === undefined;
     this.clientInfo = options.client;
     this.auth = options.auth;
+    this.transportAuth = options.transportAuth;
     this.transport = options.transport ?? createDefaultTransport(options.serverUrl);
     this.transport.onMessage((message) => {
       void this.handleMessage(message);
@@ -79,6 +88,7 @@ export class MdpClient {
   }
 
   async connect(): Promise<void> {
+    await this.authenticateTransport();
     await this.transport.connect();
     this.connected = true;
   }
@@ -86,6 +96,32 @@ export class MdpClient {
   setAuth(auth?: AuthContext): this {
     this.auth = auth;
     return this;
+  }
+
+  async authenticateTransport(auth: AuthContext | undefined = this.auth): Promise<void> {
+    const effectiveTransportAuth =
+      this.transportAuth ??
+      (this.usesDefaultTransport &&
+      auth &&
+      isWebSocketProtocol(this.serverProtocol)
+        ? ({
+            mode: "cookie"
+          } satisfies ClientTransportAuthOptions)
+        : undefined);
+
+    if (!effectiveTransportAuth) {
+      return;
+    }
+
+    switch (effectiveTransportAuth.mode) {
+      case "cookie":
+        await bootstrapCookieTransportAuth(
+          this.serverUrl,
+          effectiveTransportAuth,
+          effectiveTransportAuth.auth ?? auth
+        );
+        return;
+    }
   }
 
   register(overrides: ClientDescriptorOverride = {}): void {
@@ -183,6 +219,56 @@ function createDefaultTransport(serverUrl: string): ClientTransport {
     default:
       throw new Error(`Unsupported MDP transport protocol: ${protocol}`);
   }
+}
+
+function isWebSocketProtocol(protocol: string): boolean {
+  return protocol === "ws:" || protocol === "wss:";
+}
+
+const DEFAULT_COOKIE_AUTH_ENDPOINT = "/mdp/auth";
+
+async function bootstrapCookieTransportAuth(
+  serverUrl: string,
+  options: Extract<ClientTransportAuthOptions, { mode: "cookie" }>,
+  auth: AuthContext | undefined
+): Promise<void> {
+  if (!auth) {
+    throw new Error("Cookie transport auth requires an auth context");
+  }
+
+  const fetchImpl = options.fetch ?? globalThis.fetch;
+
+  if (!fetchImpl) {
+    throw new Error("No fetch implementation is available in this runtime");
+  }
+
+  const response = await fetchImpl(resolveTransportAuthEndpoint(serverUrl, options.endpoint), {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      ...options.headers
+    },
+    body: JSON.stringify({
+      auth
+    }),
+    credentials: options.credentials ?? "include"
+  });
+
+  if (!response.ok) {
+    throw new Error(`Unable to bootstrap websocket auth for ${serverUrl}`);
+  }
+}
+
+function resolveTransportAuthEndpoint(serverUrl: string, endpoint?: string): string {
+  const baseUrl = new URL(serverUrl);
+
+  if (baseUrl.protocol === "ws:") {
+    baseUrl.protocol = "http:";
+  } else if (baseUrl.protocol === "wss:") {
+    baseUrl.protocol = "https:";
+  }
+
+  return new URL(endpoint ?? DEFAULT_COOKIE_AUTH_ENDPOINT, baseUrl).toString();
 }
 
 export function resolveServerUrl(attributes: BrowserScriptClientAttributes): string {

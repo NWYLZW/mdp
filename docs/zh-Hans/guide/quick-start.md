@@ -24,6 +24,7 @@ npx @modeldriveprotocol/server --port 7070
 
 - `ws://127.0.0.1:7070` 上的 WebSocket
 - `http://127.0.0.1:7070/mdp/http-loop` 上的 HTTP loop
+- `http://127.0.0.1:7070/mdp/auth` 上的 auth bootstrap
 
 如果要暴露安全端点，可以额外提供证书与私钥：
 
@@ -31,7 +32,7 @@ npx @modeldriveprotocol/server --port 7070
 npx @modeldriveprotocol/server --port 7070 --tls-key ./certs/server-key.pem --tls-cert ./certs/server-cert.pem
 ```
 
-启用 TLS 后，端点会变成 `wss://127.0.0.1:7070` 和 `https://127.0.0.1:7070/mdp/http-loop`。
+启用 TLS 后，端点会变成 `wss://127.0.0.1:7070`、`https://127.0.0.1:7070/mdp/http-loop` 和 `https://127.0.0.1:7070/mdp/auth`。
 
 ## 2. 启动一个 Client
 
@@ -52,6 +53,26 @@ client.exposeTool("searchDom", async ({ query }) => ({
   query,
   matches: 3
 }));
+
+await client.connect();
+client.register();
+```
+
+如果运行时像浏览器一样无法直接给 WebSocket 设置 header，可以复用同一个 auth envelope。`connect()` 会自动先做 auth cookie bootstrap：
+
+```ts
+import { createMdpClient } from "@modeldriveprotocol/client";
+
+const client = createMdpClient({
+  serverUrl: "wss://127.0.0.1:7070",
+  auth: {
+    token: "client-session-token"
+  },
+  client: {
+    id: "browser-01",
+    name: "Browser Client"
+  }
+});
 
 await client.connect();
 client.register();

@@ -24,6 +24,7 @@ By default the same listener exposes:
 
 - WebSocket at `ws://127.0.0.1:7070`
 - HTTP loop at `http://127.0.0.1:7070/mdp/http-loop`
+- auth bootstrap at `http://127.0.0.1:7070/mdp/auth`
 
 To expose secure endpoints, provide a key pair:
 
@@ -31,7 +32,7 @@ To expose secure endpoints, provide a key pair:
 npx @modeldriveprotocol/server --port 7070 --tls-key ./certs/server-key.pem --tls-cert ./certs/server-cert.pem
 ```
 
-With TLS enabled, the endpoints become `wss://127.0.0.1:7070` and `https://127.0.0.1:7070/mdp/http-loop`.
+With TLS enabled, the endpoints become `wss://127.0.0.1:7070`, `https://127.0.0.1:7070/mdp/http-loop`, and `https://127.0.0.1:7070/mdp/auth`.
 
 ## 2. Start One Client
 
@@ -52,6 +53,26 @@ client.exposeTool("searchDom", async ({ query }) => ({
   query,
   matches: 3
 }));
+
+await client.connect();
+client.register();
+```
+
+In browser-like runtimes where you cannot set websocket headers directly, reuse the same auth envelope. `connect()` will bootstrap the auth cookie automatically:
+
+```ts
+import { createMdpClient } from "@modeldriveprotocol/client";
+
+const client = createMdpClient({
+  serverUrl: "wss://127.0.0.1:7070",
+  auth: {
+    token: "client-session-token"
+  },
+  client: {
+    id: "browser-01",
+    name: "Browser Client"
+  }
+});
 
 await client.connect();
 client.register();

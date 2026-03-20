@@ -13,7 +13,7 @@ The current baseline is:
 - one TypeScript client SDK with browser bundle output
 - `ws` / `wss` plus `http` / `https` loop MDP transports
 - one fixed MCP bridge surface
-- auth envelopes on registration and invocation, plus server-side authorization hooks
+- auth envelopes on registration and invocation, transport-carried auth, and server-side authorization hooks
 - one smoke test proving the end-to-end path
 
 ## Guiding Direction

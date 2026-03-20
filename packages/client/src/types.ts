@@ -10,6 +10,11 @@ import type {
   ServerToClientMessage
 } from "@modeldriveprotocol/protocol";
 
+export type FetchLike = (
+  input: RequestInfo | URL,
+  init?: RequestInit
+) => Promise<Response>;
+
 export interface ClientInfo {
   id: string;
   name: string;
@@ -62,10 +67,22 @@ export interface ClientTransport {
   onClose(handler: () => void): void;
 }
 
+export interface CookieTransportAuthOptions {
+  mode: "cookie";
+  endpoint?: string;
+  auth?: AuthContext;
+  headers?: Record<string, string>;
+  credentials?: RequestCredentials;
+  fetch?: FetchLike;
+}
+
+export type ClientTransportAuthOptions = CookieTransportAuthOptions;
+
 export interface MdpClientOptions {
   serverUrl: string;
   client: ClientInfo;
   auth?: AuthContext;
+  transportAuth?: ClientTransportAuthOptions;
   transport?: ClientTransport;
 }
 

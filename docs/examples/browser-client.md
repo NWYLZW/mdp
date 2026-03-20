@@ -38,6 +38,9 @@ This is the simplest path for proving the bridge model end to end.
 
         const client = MDP.createMdpClient({
           serverUrl: "ws://127.0.0.1:7070",
+          auth: {
+            token: "browser-session-token"
+          },
           client: {
             id: "browser-01",
             name: document.title || "Browser Client"
@@ -117,6 +120,9 @@ This is the simplest path for proving the bridge model end to end.
 
 ## Repo Example
 
+For browser websocket auth, passing `auth` is enough. The client will bootstrap `/mdp/auth` before `connect()`.
+
 The example starts by exposing `getPageInfo`, so the host can retrieve page title and URL before calling more specific tools.
 
 See [the Pages-hosted browser example](/examples/browser/index.html) for a concrete starter file.
+For a docs-native configuration surface that can manage multiple connections, use the top-level [Playground](/playground/).

@@ -25,6 +25,8 @@ MDP transport 当前需要支持一组很小的消息集合：
 
 如果 client 需要把消息级凭据附着在注册请求上，`registerClient` 也可以携带可选的 `auth` envelope。
 
+transport auth 不走消息体。参考实现也可以从请求头、cookie，或者在建立 `ws` / `wss` 连接前先调用 `/mdp/auth` 完成的 cookie bootstrap 中记录 transport auth。
+
 返回结果应包含：
 
 - `ok`

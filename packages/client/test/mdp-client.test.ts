@@ -226,4 +226,113 @@ describe("MdpClient", () => {
       }
     });
   });
+
+  it("bootstraps cookie auth before websocket connect when auth is provided", async () => {
+    const transport = new FakeTransport();
+    const fetch = vi.fn(async () => new Response(null, { status: 204 }));
+    const client = createMdpClient({
+      serverUrl: "wss://127.0.0.1:7070",
+      client: {
+        id: "browser-01",
+        name: "Browser Client"
+      },
+      auth: {
+        token: "client-token"
+      },
+      transportAuth: {
+        mode: "cookie",
+        fetch
+      },
+      transport
+    });
+
+    await client.connect();
+
+    expect(fetch).toHaveBeenCalledWith(
+      "https://127.0.0.1:7070/mdp/auth",
+      expect.objectContaining({
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify({
+          auth: {
+            token: "client-token"
+          }
+        })
+      })
+    );
+    expect(transport.connect).toHaveBeenCalledOnce();
+  });
+
+  it("bootstraps websocket cookie auth by default without extra transport config", async () => {
+    const fetch = vi.fn(async () => new Response(null, { status: 204 }));
+    const connectSpy = vi.fn();
+
+    try {
+      vi.stubGlobal("fetch", fetch);
+      vi.stubGlobal(
+        "WebSocket",
+        class FakeWebSocket {
+          readyState = 0;
+          private listeners = new Map<string, Array<(event?: Event) => void>>();
+
+          constructor(_url: string) {
+            queueMicrotask(() => {
+              this.readyState = 1;
+              connectSpy();
+              this.emit("open");
+            });
+          }
+
+          addEventListener(
+            type: string,
+            listener: (event?: Event) => void
+          ): void {
+            this.listeners.set(type, [...(this.listeners.get(type) ?? []), listener]);
+          }
+
+          close(): void {
+            this.readyState = 3;
+            this.emit("close");
+          }
+
+          send(): void {}
+
+          private emit(type: string): void {
+            for (const listener of this.listeners.get(type) ?? []) {
+              listener();
+            }
+          }
+        }
+      );
+
+      const client = createMdpClient({
+        serverUrl: "ws://127.0.0.1:7070",
+        client: {
+          id: "browser-01",
+          name: "Browser Client"
+        },
+        auth: {
+          token: "client-token"
+        }
+      });
+
+      await client.connect();
+
+      expect(fetch).toHaveBeenCalledWith(
+        "http://127.0.0.1:7070/mdp/auth",
+        expect.objectContaining({
+          method: "POST",
+          credentials: "include",
+          body: JSON.stringify({
+            auth: {
+              token: "client-token"
+            }
+          })
+        })
+      );
+      expect(connectSpy).toHaveBeenCalledOnce();
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
 });

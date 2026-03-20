@@ -51,6 +51,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@modeldriveprotocol/client@latest/dist/modeldriveprotocol-client.global.js"></script>
     <script>
       const status = document.getElementById("status");
+      const authToken =
+        new URLSearchParams(window.location.search).get("authToken") ?? undefined;
       const readPageInfo = () => ({
         title: document.title,
         url: window.location.href,
@@ -60,6 +62,13 @@
 
       const client = MDP.createMdpClient({
         serverUrl: "ws://127.0.0.1:7070",
+        ...(authToken
+          ? {
+              auth: {
+                token: authToken
+              }
+            }
+          : {}),
         client: {
           id: "browser-example",
           name: document.title || "Browser Example Client",
@@ -103,7 +112,9 @@
       (async () => {
         await client.connect();
         client.register();
-        status.textContent = "Connected to ws://127.0.0.1:7070 and registered.";
+        status.textContent =
+          "Connected to ws://127.0.0.1:7070 and registered. " +
+          "Add ?authToken=browser-example-token to test ws cookie auth.";
       })().catch((error) => {
         status.textContent = String(error);
       });

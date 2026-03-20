@@ -20,6 +20,8 @@ JS client 应该暴露与其他运行时一致的抽象：注册 capability hand
 - `ws://` 或 `wss://` 走 WebSocket transport
 - `http://` 或 `https://` 走 HTTP loop 模式
 
+如果浏览器侧的 `ws` / `wss` 需要带认证，直接传 `auth` 就够了。`connect()` 会先对同源的 `http` / `https` 地址发起 `POST /mdp/auth`，再打开 socket。
+
 ## 构建产物
 
 当前 client package 会产出：
@@ -78,6 +80,26 @@ await client.connect();
 client.register();
 ```
 
+### 带认证的 WebSocket
+
+```ts
+import { createMdpClient } from "@modeldriveprotocol/client";
+
+const client = createMdpClient({
+  serverUrl: "wss://127.0.0.1:7070",
+  auth: {
+    token: "client-session-token"
+  },
+  client: {
+    id: "browser-01",
+    name: "Browser Client"
+  }
+});
+
+await client.connect();
+client.register();
+```
+
 ### HTTP Loop
 
 ```ts
@@ -113,6 +135,9 @@ client.register();
 
     const client = MDP.createMdpClient({
       serverUrl: "wss://127.0.0.1:7070",
+      auth: {
+        token: "client-session-token"
+      },
       client: {
         id: "browser-01",
         name: document.title || "Browser Client"
@@ -171,4 +196,4 @@ client.register();
 </script>
 ```
 
-如果需要在构造后轮换注册凭据，可以在下一次 `register()` 前调用 `client.setAuth(...)`。
+如果需要在构造后轮换注册凭据，可以在下一次 `register()` 前调用 `client.setAuth(...)`。对于 `ws` / `wss`，重连时会自动刷新 auth cookie bootstrap。

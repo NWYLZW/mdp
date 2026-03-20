@@ -38,6 +38,9 @@ status: MVP
 
         const client = MDP.createMdpClient({
           serverUrl: "ws://127.0.0.1:7070",
+          auth: {
+            token: "browser-session-token"
+          },
           client: {
             id: "browser-01",
             name: document.title || "Browser Client"
@@ -117,6 +120,9 @@ status: MVP
 
 ## 仓库示例
 
+如果浏览器里的 WebSocket 需要带认证，这个示例只要传 `auth` 即可，client 会在 `connect()` 前自动 bootstrap `/mdp/auth`。
+
 这个示例会先暴露 `getPageInfo`，这样 host 可以先拿到页面标题和 URL，再决定是否调用更具体的工具。
 
 可直接查看[部署在 Pages 上的浏览器示例](/examples/browser/index.html)作为启动模板。
+如果你需要一个直接运行在文档站里的多连接配置界面，可使用顶层入口 [Playground](/zh-Hans/playground/)。

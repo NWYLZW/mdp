@@ -14,6 +14,7 @@ The wire model is transport-agnostic. The current implementation ships with:
 - `ws` / `wss` sessions
 - `http` / `https` loop sessions
 - optional auth envelopes on `registerClient` and `callClient`
+- transport auth from request headers or `/mdp/auth` cookie bootstrap
 
 MDP capability categories:
 
