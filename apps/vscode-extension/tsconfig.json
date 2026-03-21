@@ -1,0 +1,34 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": false,
+    "incremental": false,
+    "declaration": false,
+    "declarationMap": false,
+    "rootDir": "../../",
+    "outDir": "./dist",
+    "lib": [
+      "ES2022",
+      "DOM"
+    ],
+    "types": [
+      "node"
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@modeldriveprotocol/client": [
+        "../../packages/client/src/index.ts"
+      ],
+      "@modeldriveprotocol/protocol": [
+        "../../packages/protocol/src/index.ts"
+      ]
+    },
+    "tsBuildInfoFile": "./tsconfig.tsbuildinfo"
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "test/**/*.ts",
+    "scripts/**/*.mjs"
+  ]
+}

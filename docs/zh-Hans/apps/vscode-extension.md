@@ -70,6 +70,28 @@ pnpm --filter @modeldriveprotocol/vscode-extension build
 
 构建后的入口位于 `apps/vscode-extension/dist/extension.js`。
 
+## 本地调试
+
+如果你是在 VSCode 里开发这个仓库，直接打开仓库根目录并使用仓库内置的 `MDP VSCode Extension` 启动配置即可。
+
+如果你希望在 Extension Development Host 运行时保存自动重建，可以额外启动：
+
+```bash
+pnpm --filter @modeldriveprotocol/vscode-extension dev
+```
+
+## 发布
+
+仓库里已经补上了 VSCode 插件专属工作流：
+
+- `.github/workflows/vscode-extension-ci.yml` 负责校验 app 并上传 VSIX 构件
+- `.github/workflows/vscode-extension-release.yml` 在 `vscode-extension-v*` tag 上运行，打包 VSIX、发布到 VS Code Marketplace，并把构件挂到 GitHub Release
+
+这条发布流水线依赖：
+
+- 仓库变量 `VSCODE_EXTENSION_PUBLISHER`
+- 仓库密钥 `VSCE_PAT`
+
 - [JavaScript / 简易上手](/zh-Hans/sdk/javascript/quick-start)
 - [MCP 定义](/zh-Hans/sdk/javascript/mcp-definitions)
 - [Skills 定义](/zh-Hans/sdk/javascript/skills-definitions)

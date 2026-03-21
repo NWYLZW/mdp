@@ -1,0 +1,18 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "MDP VSCode Extension",
+      "type": "extensionHost",
+      "request": "launch",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}/apps/vscode-extension",
+        "--disable-extensions"
+      ],
+      "outFiles": [
+        "${workspaceFolder}/apps/vscode-extension/dist/**/*.js"
+      ],
+      "preLaunchTask": "mdp:vscode-extension build"
+    }
+  ]
+}

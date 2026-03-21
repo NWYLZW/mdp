@@ -1,0 +1,138 @@
+{
+  "name": "@modeldriveprotocol/vscode-extension",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "displayName": "MDP VSCode Client",
+  "description": "VSCode extension that exposes editor and workspace capabilities through the MDP client.",
+  "engines": {
+    "vscode": "^1.100.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished",
+    "onCommand:mdp.connect",
+    "onCommand:mdp.disconnect",
+    "onCommand:mdp.reconnect",
+    "onCommand:mdp.showStatus"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "mdp.connect",
+        "title": "MDP: Connect"
+      },
+      {
+        "command": "mdp.disconnect",
+        "title": "MDP: Disconnect"
+      },
+      {
+        "command": "mdp.reconnect",
+        "title": "MDP: Reconnect"
+      },
+      {
+        "command": "mdp.showStatus",
+        "title": "MDP: Show Status"
+      }
+    ],
+    "configuration": {
+      "title": "MDP",
+      "properties": {
+        "mdp.serverUrl": {
+          "type": "string",
+          "default": "ws://127.0.0.1:7070",
+          "description": "MDP server URL. ws/wss use the websocket transport, http/https use HTTP loop mode."
+        },
+        "mdp.autoConnect": {
+          "type": "boolean",
+          "default": true,
+          "description": "Connect and register with the configured MDP server when the extension activates."
+        },
+        "mdp.autoReconnect": {
+          "type": "boolean",
+          "default": true,
+          "description": "Reconnect automatically after an unexpected transport close."
+        },
+        "mdp.reconnectDelayMs": {
+          "type": "number",
+          "default": 3000,
+          "minimum": 250,
+          "maximum": 60000,
+          "description": "Delay before an automatic reconnect attempt after an unexpected disconnect."
+        },
+        "mdp.clientId": {
+          "type": "string",
+          "default": "",
+          "description": "Optional client id override. Leave empty to derive one from the VSCode machine id and workspace."
+        },
+        "mdp.clientName": {
+          "type": "string",
+          "default": "",
+          "description": "Optional client display name override."
+        },
+        "mdp.authToken": {
+          "type": "string",
+          "default": "",
+          "description": "Optional bearer token sent in registration and routed invocation auth envelopes."
+        },
+        "mdp.allowedCommands": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Allowlist for the vscode.executeCommand tool. Commands not listed here are rejected."
+        },
+        "mdp.findFilesMaxResults": {
+          "type": "number",
+          "default": 200,
+          "minimum": 1,
+          "maximum": 1000,
+          "description": "Default and maximum file count returned by vscode.findWorkspaceFiles."
+        },
+        "mdp.textSearchMaxResults": {
+          "type": "number",
+          "default": 200,
+          "minimum": 1,
+          "maximum": 1000,
+          "description": "Default and maximum match count returned by vscode.searchWorkspaceText."
+        },
+        "mdp.resourceTextLimit": {
+          "type": "number",
+          "default": 20000,
+          "minimum": 256,
+          "maximum": 200000,
+          "description": "Maximum number of characters included in active document and selection resources."
+        },
+        "mdp.diagnosticResultLimit": {
+          "type": "number",
+          "default": 200,
+          "minimum": 1,
+          "maximum": 1000,
+          "description": "Maximum number of diagnostics returned by vscode.getDiagnostics and review capabilities."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "tsc --noEmit -p tsconfig.json --pretty false && node ./scripts/build.mjs",
+    "clean": "node ../../scripts/clean.mjs",
+    "dev": "node ./scripts/build.mjs --watch",
+    "package:vsix": "node ./scripts/package.mjs",
+    "publish:vsix": "node ./scripts/publish.mjs",
+    "test": "pnpm --dir ../.. exec vitest run apps/vscode-extension/test",
+    "typecheck": "tsc --noEmit -p tsconfig.json --pretty false"
+  },
+  "mdpRelease": {
+    "extensionName": "mdp-vscode-extension"
+  },
+  "dependencies": {
+    "@modeldriveprotocol/client": "workspace:*"
+  },
+  "devDependencies": {
+    "@vscode/vsce": "^3.7.1"
+  }
+}

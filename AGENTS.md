@@ -132,6 +132,51 @@ Key files:
 - [docs/client/js-client.md](./docs/client/js-client.md)
 - [docs/reference/roadmap.md](./docs/reference/roadmap.md)
 
+### `apps/vscode-extension`
+
+VSCode extension host app that embeds the MDP client and exposes editor/workspace capabilities.
+
+Read here when working on:
+
+- extension activation and connection lifecycle
+- VSCode capability registration
+- editor/workspace snapshot shaping
+- local extension development workflow
+
+Key files:
+
+- [apps/vscode-extension/AGENTS.md](./apps/vscode-extension/AGENTS.md)
+- [apps/vscode-extension/src/extension.ts](./apps/vscode-extension/src/extension.ts)
+- [apps/vscode-extension/src/extension-controller.ts](./apps/vscode-extension/src/extension-controller.ts)
+- [apps/vscode-extension/src/capabilities/index.ts](./apps/vscode-extension/src/capabilities/index.ts)
+- [apps/vscode-extension/src/config.ts](./apps/vscode-extension/src/config.ts)
+- [apps/vscode-extension/src/model.ts](./apps/vscode-extension/src/model.ts)
+- [apps/vscode-extension/test/capabilities.test.ts](./apps/vscode-extension/test/capabilities.test.ts)
+
+### `apps/chrome-extension`
+
+Chrome extension app that embeds an MDP client in a Manifest V3 background worker and bridges into page content scripts.
+
+Read here when working on:
+
+- extension connection lifecycle and host permissions
+- page command dispatch and main-world bridge injection
+- popup/options UI behavior
+- Chrome-specific capability registration
+
+Key files:
+
+- [apps/chrome-extension/AGENTS.md](./apps/chrome-extension/AGENTS.md)
+- [apps/chrome-extension/src/background/index.ts](./apps/chrome-extension/src/background/index.ts)
+- [apps/chrome-extension/src/background/runtime.ts](./apps/chrome-extension/src/background/runtime.ts)
+- [apps/chrome-extension/src/background/capabilities/index.ts](./apps/chrome-extension/src/background/capabilities/index.ts)
+- [apps/chrome-extension/src/background/capabilities/page.ts](./apps/chrome-extension/src/background/capabilities/page.ts)
+- [apps/chrome-extension/src/page/content-script.ts](./apps/chrome-extension/src/page/content-script.ts)
+- [apps/chrome-extension/src/page/injected-main.ts](./apps/chrome-extension/src/page/injected-main.ts)
+- [apps/chrome-extension/src/ui/popup.ts](./apps/chrome-extension/src/ui/popup.ts)
+- [apps/chrome-extension/src/ui/options.ts](./apps/chrome-extension/src/ui/options.ts)
+- [apps/chrome-extension/test/page-visibility.test.ts](./apps/chrome-extension/test/page-visibility.test.ts)
+
 ### `scripts`
 
 Repo-level utilities.
@@ -167,6 +212,7 @@ Package-level unit tests live in:
 - `packages/protocol/test/**`
 - `packages/client/test/**`
 - `packages/server/test/**`
+- `apps/*/test/**`
 
 Use unit tests for behavior that should stay stable within one layer:
 
@@ -209,6 +255,8 @@ If you are editing only one package, these narrower commands are available too:
 pnpm --filter @modeldriveprotocol/protocol test
 pnpm --filter @modeldriveprotocol/client test
 pnpm --filter @modeldriveprotocol/server test
+pnpm --filter @modeldriveprotocol/chrome-extension test
+pnpm --filter @modeldriveprotocol/vscode-extension test
 ```
 
 ## Safe Change Strategy

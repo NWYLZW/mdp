@@ -70,6 +70,28 @@ pnpm --filter @modeldriveprotocol/vscode-extension build
 
 The extension entry point is emitted to `apps/vscode-extension/dist/extension.js`.
 
+## Local debug
+
+When developing this repository in VSCode, open the repo root and use the checked-in `MDP VSCode Extension` launch configuration.
+
+If you want rebuild-on-save while the Extension Development Host is running, start:
+
+```bash
+pnpm --filter @modeldriveprotocol/vscode-extension dev
+```
+
+## Release
+
+The repository includes dedicated VSCode extension workflows:
+
+- `.github/workflows/vscode-extension-ci.yml` validates the app and uploads a VSIX artifact
+- `.github/workflows/vscode-extension-release.yml` runs on `vscode-extension-v*` tags, packages the VSIX, publishes to the VS Code Marketplace, and attaches the artifact to a GitHub release
+
+The release workflow expects:
+
+- repository variable `VSCODE_EXTENSION_PUBLISHER`
+- secret `VSCE_PAT`
+
 - [JavaScript Quick Start](/sdk/javascript/quick-start)
 - [MCP Definitions](/sdk/javascript/mcp-definitions)
 - [Skills Definitions](/sdk/javascript/skills-definitions)

@@ -1,0 +1,97 @@
+name: VSCode Extension Release
+
+on:
+  push:
+    tags:
+      - "vscode-extension-v*"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: vscode-extension-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.0
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate release version
+        id: version
+        env:
+          TAG_NAME: ${{ github.ref_name }}
+          VSCODE_EXTENSION_PUBLISHER: ${{ vars.VSCODE_EXTENSION_PUBLISHER }}
+        run: |
+          PACKAGE_VERSION=$(node -p "JSON.parse(require('fs').readFileSync('apps/vscode-extension/package.json', 'utf8')).version")
+          TAG_VERSION="${TAG_NAME#vscode-extension-v}"
+
+          if [ -z "$VSCODE_EXTENSION_PUBLISHER" ]; then
+            echo "Missing repository variable VSCODE_EXTENSION_PUBLISHER." >&2
+            exit 1
+          fi
+
+          if [ "$TAG_VERSION" != "$PACKAGE_VERSION" ]; then
+            echo "Tag version ($TAG_VERSION) does not match VSCode extension version ($PACKAGE_VERSION)." >&2
+            exit 1
+          fi
+
+          echo "value=$PACKAGE_VERSION" >> "$GITHUB_OUTPUT"
+          echo "file=mdp-vscode-extension-v$PACKAGE_VERSION.vsix" >> "$GITHUB_OUTPUT"
+          echo "archive=apps/vscode-extension/mdp-vscode-extension-v$PACKAGE_VERSION.vsix" >> "$GITHUB_OUTPUT"
+
+      - name: Typecheck extension
+        run: pnpm --filter @modeldriveprotocol/vscode-extension typecheck
+
+      - name: Test extension
+        run: pnpm --filter @modeldriveprotocol/vscode-extension test
+
+      - name: Build extension
+        run: pnpm --filter @modeldriveprotocol/vscode-extension build
+
+      - name: Package VSIX
+        env:
+          VSCODE_EXTENSION_PUBLISHER: ${{ vars.VSCODE_EXTENSION_PUBLISHER }}
+          ARCHIVE_FILE: ${{ steps.version.outputs.file }}
+        run: pnpm --filter @modeldriveprotocol/vscode-extension package:vsix -- --out "$ARCHIVE_FILE"
+
+      - name: Publish to VS Code Marketplace
+        env:
+          VSCODE_EXTENSION_PUBLISHER: ${{ vars.VSCODE_EXTENSION_PUBLISHER }}
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+          ARCHIVE_FILE: ${{ steps.version.outputs.file }}
+        run: pnpm --filter @modeldriveprotocol/vscode-extension publish:vsix -- --packagePath "$ARCHIVE_FILE"
+
+      - name: Create or update GitHub release
+        env:
+          ARCHIVE_PATH: ${{ steps.version.outputs.archive }}
+          GH_TOKEN: ${{ github.token }}
+          TAG_NAME: ${{ github.ref_name }}
+          VERSION: ${{ steps.version.outputs.value }}
+        run: |
+          if gh release view "$TAG_NAME" >/dev/null 2>&1; then
+            gh release upload "$TAG_NAME" "$ARCHIVE_PATH" --clobber
+          else
+            gh release create "$TAG_NAME" "$ARCHIVE_PATH" \
+              --title "VSCode Extension v$VERSION" \
+              --notes "Packaged VSCode extension build for v$VERSION."
+          fi

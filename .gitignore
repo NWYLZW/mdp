@@ -4,6 +4,7 @@ packages/*/dist/
 packages/*/*.tsbuildinfo
 apps/*/dist/
 apps/*/*.tsbuildinfo
+apps/*/*.vsix
 docs/.vitepress/cache/
 docs/.vitepress/dist/
 docs/public/assets/mdp-client.global.js
