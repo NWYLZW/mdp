@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./icon.svg" alt="MDP icon" width="96" height="96" />
+  <img src="./icon.svg" alt="MDP icon" width="256" height="256" />
 </p>
 
 # Model Drive Protocol
@@ -49,6 +49,7 @@ The core model is:
 - the MDP server exposes bridge tools to MCP hosts
 
 Capabilities can be exposed as `tools`, `prompts`, `skills`, and `resources`.
+Skills can also be exposed as hierarchical Markdown documents such as `workspace/review` and `workspace/review/files`, letting hosts reveal more context by reading deeper skill paths only when needed.
 
 Current transport support includes:
 
