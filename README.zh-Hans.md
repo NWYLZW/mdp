@@ -3,6 +3,8 @@
 | [en-US](./README.md) | zh-Hans |
 | --- | --- |
 
+> 模型与万物建立连接的终极方案
+
 MDP 把原本困在各个运行时里的能力，变成 AI 可通过 MCP 调用的能力。
 
 如果你的关键逻辑存在于浏览器标签页、移动端应用、桌面进程、嵌入式运行时，或者本地 agent 进程里，MDP 提供一个统一的 bridge server，让这些能力可以被注册，也让 AI host 能以稳定方式调用它们。
@@ -64,16 +66,35 @@ flowchart LR
   clients --> local["桌面 / 设备 / 本地进程"]
 ```
 
+## 先选一条入口
+
+- 如果你想先用最短路径跑通链路，从 [快速开始](./docs/zh-Hans/guide/quick-start.md) 开始。
+- 如果你已经理解模型，只想看精确的工具与接口数据格式，直接看 [Server / Tools](./docs/zh-Hans/server/tools.md) 和 [Server / APIs](./docs/zh-Hans/server/api.md)。
+- 如果你要把 MDP 接进浏览器页面、本地进程或自定义运行时，优先看 [JavaScript SDK / 简易上手](./docs/zh-Hans/sdk/javascript/quick-start.md)。
+- 如果你更想直接从现成集成开始，优先看 [Chrome 插件](./docs/zh-Hans/apps/chrome-extension.md) 和 [VSCode 插件](./docs/zh-Hans/apps/vscode-extension.md)。
+
+## 仓库里有什么
+
+- `packages/protocol`：协议模型、消息类型、guards 和错误模型
+- `packages/server`：MDP server runtime、transport server 与固定 MCP bridge
+- `packages/client`：JavaScript client SDK 和浏览器 bundle
+- `apps/chrome-extension`：打包好的 Chrome 运行时集成
+- `apps/vscode-extension`：打包好的 VSCode 运行时集成
+- `docs`：VitePress 文档站和 Playground
+
 ## 文档入口
 
-开始使用和协议细节，请查看文档站：
+开始使用、查看精确工具与接口格式，以及了解现成集成方式，请查看文档站：
 
-- [介绍](./docs/zh-Hans/guide/introduction.md)
 - [快速开始](./docs/zh-Hans/guide/quick-start.md)
+- [什么是 MDP？](./docs/zh-Hans/guide/introduction.md)
 - [架构](./docs/zh-Hans/guide/architecture.md)
-- [协议概览](./docs/zh-Hans/protocol/overview.md)
-- [MCP Bridge](./docs/zh-Hans/protocol/mcp-bridge.md)
-- [嵌入其他运行时](./docs/zh-Hans/client/embedding.md)
+- [Server / Tools](./docs/zh-Hans/server/tools.md)
+- [Server / APIs](./docs/zh-Hans/server/api.md)
+- [JavaScript SDK / 简易上手](./docs/zh-Hans/sdk/javascript/quick-start.md)
+- [Chrome 插件](./docs/zh-Hans/apps/chrome-extension.md)
+- [VSCode 插件](./docs/zh-Hans/apps/vscode-extension.md)
+- [Playground](./docs/zh-Hans/playground/index.md)
 
 ## 开发者说明
 

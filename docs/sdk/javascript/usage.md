@@ -15,6 +15,13 @@ It works well for:
 - Node-based local agents
 - local helper processes used for prototyping
 
+## Ready-made app references
+
+If you want a packaged runtime integration instead of wiring the SDK from scratch, start with:
+
+- [Chrome Extension](/apps/chrome-extension)
+- [VSCode Extension](/apps/vscode-extension)
+
 ## Transport selection
 
 The default transport is selected from `serverUrl`:

@@ -28,7 +28,40 @@ If websocket auth is required in the browser, the SDK can bootstrap `/mdp/auth` 
 
 ## Current repo status
 
-This repository does not yet ship a dedicated Chrome extension package. The closest starter is the browser example plus the JavaScript SDK.
+This repository now includes a dedicated Chrome extension app under `apps/chrome-extension`.
+
+The app is built as an MDP client:
+
+- the background service worker connects to the MDP server
+- matched pages receive a content script for DOM operations
+- the extension can inject a main-world bridge so page-local code can register tools
+
+## What it exposes
+
+The current extension app can expose capabilities such as:
+
+- Chrome-side tools for tab management, notifications, and config status
+- DOM-oriented page tools through the content script
+- injected main-world tools through `window.__MDP_EXTENSION_BRIDGE__`
+- bridge tools such as `page.listInjectedTools`, `page.callInjectedTool`, and `page.getSnapshot`
+
+## Build and load
+
+Build the unpacked extension with:
+
+```bash
+pnpm --filter @modeldriveprotocol/chrome-extension build
+```
+
+Then load `apps/chrome-extension/dist` from `chrome://extensions` with Developer mode enabled.
+
+## Configure
+
+Use the extension options page to set:
+
+- the MDP server URL
+- target match patterns
+- the optional default tool script for main-world registration
 
 - [JavaScript Quick Start](/sdk/javascript/quick-start)
 - [Usage](/sdk/javascript/usage)

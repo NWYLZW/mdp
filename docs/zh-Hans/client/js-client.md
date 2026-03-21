@@ -1,61 +1,32 @@
 ---
-title: JS 客户端
+title: JavaScript 客户端
 status: MVP
 ---
 
-# JS 客户端
+# JavaScript 客户端
 
-JavaScript client 是一个方便使用的适配器，不是协议本身。
+这个路径被保留下来，主要是为了兼容旧链接。当前主要的 JavaScript 接入文档已经移动到 `SDKs > JavaScript`。
 
-它适合这些场景：
+## 推荐入口
+
+- [简易上手](/zh-Hans/sdk/javascript/quick-start)
+- [如何使用](/zh-Hans/sdk/javascript/usage)
+- [MCP 定义](/zh-Hans/sdk/javascript/mcp-definitions)
+- [Skills 定义](/zh-Hans/sdk/javascript/skills-definitions)
+- [Chrome 插件](/zh-Hans/apps/chrome-extension)
+- [VSCode 插件](/zh-Hans/apps/vscode-extension)
+
+## JavaScript client 是什么
+
+JavaScript client 是一个方便使用的适配器，不是协议本身。它适合：
 
 - 浏览器嵌入
 - 基于 Node 的本地 agent
 - 快速原型验证
 
-JS client 应该暴露与其他运行时一致的抽象：注册 capability handlers、建立连接、处理路由调用、返回结果。
+它暴露的抽象与其他运行时保持一致：注册 capability handlers、建立连接、处理路由调用、返回结果。
 
-默认情况下，transport 由 URL scheme 决定：
-
-- `ws://` 或 `wss://` 走 WebSocket transport
-- `http://` 或 `https://` 走 HTTP loop 模式
-
-如果浏览器侧的 `ws` / `wss` 需要带认证，直接传 `auth` 就够了。`connect()` 会先对同源的 `http` / `https` 地址发起 `POST /mdp/auth`，再打开 socket。
-
-## 构建产物
-
-当前 client package 会产出：
-
-- 位于 `packages/client/dist/*.js` 下的 ESM SDK 文件
-- 浏览器全局 bundle `packages/client/dist/modeldriveprotocol-client.global.js`
-
-如果要走浏览器全局脚本，可以直接使用 npm CDN 形式：
-
-`https://cdn.jsdelivr.net/npm/@modeldriveprotocol/client@latest/dist/modeldriveprotocol-client.global.js`
-
-这个全局 bundle 会把 `MDP` 挂到 `window` 上，因此普通浏览器页面可以直接这样使用：
-
-```html
-<script src="https://cdn.jsdelivr.net/npm/@modeldriveprotocol/client@latest/dist/modeldriveprotocol-client.global.js"></script>
-<script>
-  const client = MDP.createMdpClient({
-    serverUrl: "ws://127.0.0.1:7070",
-    client: {
-      id: "browser-01",
-      name: document.title || "Browser Client"
-    }
-  });
-
-  client.exposeTool("getPageInfo", async () => ({
-    title: document.title,
-    url: window.location.href
-  }));
-</script>
-```
-
-## ESM 用法
-
-### WebSocket
+## 最小示例
 
 ```ts
 import { createMdpClient } from "@modeldriveprotocol/client";
@@ -68,132 +39,13 @@ const client = createMdpClient({
   }
 });
 
-client.exposeTool("searchDom", async ({ query }, context) => {
-  return {
-    query,
-    matches: 3,
-    authToken: context.auth?.token
-  };
-});
+client.exposeTool("searchDom", async ({ query }) => ({
+  query,
+  matches: 3
+}));
 
 await client.connect();
 client.register();
 ```
 
-### 带认证的 WebSocket
-
-```ts
-import { createMdpClient } from "@modeldriveprotocol/client";
-
-const client = createMdpClient({
-  serverUrl: "wss://127.0.0.1:7070",
-  auth: {
-    token: "client-session-token"
-  },
-  client: {
-    id: "browser-01",
-    name: "Browser Client"
-  }
-});
-
-await client.connect();
-client.register();
-```
-
-### HTTP Loop
-
-```ts
-import { createMdpClient } from "@modeldriveprotocol/client";
-
-const client = createMdpClient({
-  serverUrl: "http://127.0.0.1:7070",
-  auth: {
-    token: "client-session-token"
-  },
-  client: {
-    id: "browser-01",
-    name: "Browser Client"
-  }
-});
-
-await client.connect();
-client.register();
-```
-
-## 浏览器全局用法
-
-### WebSocket
-
-```html
-<script src="https://cdn.jsdelivr.net/npm/@modeldriveprotocol/client@latest/dist/modeldriveprotocol-client.global.js"></script>
-<script>
-  void (async () => {
-    const readPageInfo = () => ({
-      title: document.title,
-      url: window.location.href
-    });
-
-    const client = MDP.createMdpClient({
-      serverUrl: "wss://127.0.0.1:7070",
-      auth: {
-        token: "client-session-token"
-      },
-      client: {
-        id: "browser-01",
-        name: document.title || "Browser Client"
-      }
-    });
-
-    client.exposeTool("getPageInfo", async (_args, context) => ({
-      ...readPageInfo(),
-      authToken: context.auth?.token
-    }));
-
-    client.exposeTool("searchDom", async ({ query }, context) => ({
-      query,
-      matches: document.body.innerText.includes(query) ? 1 : 0,
-      title: document.title,
-      url: window.location.href,
-      authToken: context.auth?.token
-    }));
-
-    await client.connect();
-    client.register();
-  })();
-</script>
-```
-
-### HTTP Loop
-
-```html
-<script src="https://cdn.jsdelivr.net/npm/@modeldriveprotocol/client@latest/dist/modeldriveprotocol-client.global.js"></script>
-<script>
-  void (async () => {
-    const readPageInfo = () => ({
-      title: document.title,
-      url: window.location.href
-    });
-
-    const client = MDP.createMdpClient({
-      serverUrl: "https://127.0.0.1:7070",
-      auth: {
-        token: "client-session-token"
-      },
-      client: {
-        id: "browser-01",
-        name: document.title || "Browser Client"
-      }
-    });
-
-    client.exposeTool("getPageInfo", async (_args, context) => ({
-      ...readPageInfo(),
-      authToken: context.auth?.token
-    }));
-
-    await client.connect();
-    client.register();
-  })();
-</script>
-```
-
-如果需要在构造后轮换注册凭据，可以在下一次 `register()` 前调用 `client.setAuth(...)`。对于 `ws` / `wss`，重连时会自动刷新 auth cookie bootstrap。
+更完整的 transport、认证引导、浏览器全局 bundle 与能力定义细节，请继续阅读上面列出的 SDK 页面。

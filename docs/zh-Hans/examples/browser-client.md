@@ -5,6 +5,17 @@ status: MVP
 
 # 浏览器客户端
 
+这个路径被保留下来，主要是为了兼容旧链接。按照当前文档结构，浏览器侧接入内容已经拆分到 JavaScript SDK、Chrome 插件和 Playground。
+
+## 推荐入口
+
+- [JavaScript / 简易上手](/zh-Hans/sdk/javascript/quick-start)
+- [JavaScript / 如何使用](/zh-Hans/sdk/javascript/usage)
+- [Chrome 插件](/zh-Hans/apps/chrome-extension)
+- [Playground](/zh-Hans/playground/)
+
+## 这个示例适合什么场景
+
 浏览器 client 可以暴露：
 
 - 页面选区作为 resource
@@ -125,4 +136,5 @@ status: MVP
 这个示例会先暴露 `getPageInfo`，这样 host 可以先拿到页面标题和 URL，再决定是否调用更具体的工具。
 
 可直接查看[部署在 Pages 上的浏览器示例](/examples/browser/index.html)作为启动模板。
+如果你想要打包好的浏览器集成，优先使用 [Chrome 插件](/zh-Hans/apps/chrome-extension)。
 如果你需要一个直接运行在文档站里的多连接配置界面，可使用顶层入口 [Playground](/zh-Hans/playground/)。

@@ -46,3 +46,4 @@ Once the client is registered, an MCP host can use bridge tools such as:
 - `callTools`
 
 If you want transport choices, auth bootstrap, or browser-global usage, continue with [Usage](/sdk/javascript/usage).
+If you want ready-made app integrations instead of wiring the SDK yourself, start with [Chrome Extension](/apps/chrome-extension) or [VSCode Extension](/apps/vscode-extension).

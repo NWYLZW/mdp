@@ -3,6 +3,8 @@
 | en-US | [zh-Hans](./README.zh-Hans.md) |
 | --- | --- |
 
+> The ultimate solution for connecting models with everything.
+
 MDP turns runtime-local capabilities into MCP-reachable capabilities.
 
 If your useful logic lives inside a browser tab, mobile app, desktop process, embedded runtime, or local agent, MDP gives it one bridge server to register with and one stable way for AI hosts to call it.
@@ -64,16 +66,35 @@ flowchart LR
   clients --> local["Desktop / Device / Local Process"]
 ```
 
+## Pick A Path
+
+- Use [Quick Start](./docs/guide/quick-start.md) if you want the shortest path from zero to a working client plus MCP bridge.
+- Use [Server Tools](./docs/server/tools.md) and [Server APIs](./docs/server/api.md) if you already understand the model and need exact data formats.
+- Use [JavaScript SDK Quick Start](./docs/sdk/javascript/quick-start.md) if you want to embed MDP into a browser page, local process, or custom runtime.
+- Use [Chrome Extension](./docs/apps/chrome-extension.md) or [VSCode Extension](./docs/apps/vscode-extension.md) if you want a packaged runtime integration instead of wiring the SDK yourself.
+
+## What Is In This Repo
+
+- `packages/protocol`: protocol models, message types, guards, and errors
+- `packages/server`: MDP server runtime, transport server, and fixed MCP bridge
+- `packages/client`: JavaScript client SDK and browser bundle
+- `apps/chrome-extension`: packaged Chrome runtime integration
+- `apps/vscode-extension`: packaged VSCode runtime integration
+- `docs`: VitePress documentation site and Playground
+
 ## Documentation
 
-Use the docs for getting started and protocol details:
+Use the docs for getting started, exact tool and API formats, and packaged integration guidance:
 
-- [Introduction](./docs/guide/introduction.md)
 - [Quick Start](./docs/guide/quick-start.md)
+- [What Is MDP?](./docs/guide/introduction.md)
 - [Architecture](./docs/guide/architecture.md)
-- [Protocol Overview](./docs/protocol/overview.md)
-- [MCP Bridge](./docs/protocol/mcp-bridge.md)
-- [Embedding Other Runtimes](./docs/client/embedding.md)
+- [Server Tools](./docs/server/tools.md)
+- [Server APIs](./docs/server/api.md)
+- [JavaScript SDK Quick Start](./docs/sdk/javascript/quick-start.md)
+- [Chrome Extension](./docs/apps/chrome-extension.md)
+- [VSCode Extension](./docs/apps/vscode-extension.md)
+- [Playground](./docs/playground/index.md)
 
 ## Development
 

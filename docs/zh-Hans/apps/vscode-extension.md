@@ -27,7 +27,48 @@ status: Draft
 
 ## 当前仓库状态
 
-当前仓库还没有单独提供 VSCode 插件 package。现阶段更实际的路径，是把 JavaScript SDK 集成进你的扩展入口。
+当前仓库已经内置一个 VSCode 插件应用，目录在 `apps/vscode-extension`。
+
+这个 app 会把 MDP client 跑在 extension host 里，并默认暴露：
+
+- `vscode.getWorkspaceContext`
+- `vscode.findWorkspaceFiles`
+- `vscode.readWorkspaceFile`
+- `vscode.searchWorkspaceText`
+- `vscode.getDiagnostics`
+- 带 allowlist 的 `vscode.executeCommand`
+- 作为 prompt 的 `vscode.reviewSelection`
+- 作为 skill 的 `vscode.reviewActiveEditor`
+- 当前文档、选区和工作区目录 resources
+
+如果你要让 VSCode 运行时把能力注册到 MDP server，这个 app 现在就是默认起点。
+
+## 配置项
+
+这个扩展目前提供了一组 `mdp.*` 设置项：
+
+- `mdp.serverUrl`
+- `mdp.autoConnect`
+- `mdp.autoReconnect`
+- `mdp.reconnectDelayMs`
+- `mdp.clientId`
+- `mdp.clientName`
+- `mdp.authToken`
+- `mdp.allowedCommands`
+- `mdp.findFilesMaxResults`
+- `mdp.textSearchMaxResults`
+- `mdp.resourceTextLimit`
+- `mdp.diagnosticResultLimit`
+
+## 构建
+
+可以这样构建扩展：
+
+```bash
+pnpm --filter @modeldriveprotocol/vscode-extension build
+```
+
+构建后的入口位于 `apps/vscode-extension/dist/extension.js`。
 
 - [JavaScript / 简易上手](/zh-Hans/sdk/javascript/quick-start)
 - [MCP 定义](/zh-Hans/sdk/javascript/mcp-definitions)

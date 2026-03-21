@@ -4,7 +4,7 @@ layout: home
 hero:
   name: "MDP"
   text: "Model Drive Protocol"
-  tagline: "A protocol for exposing runtime internal procedures to AI through client registration and MCP bridge tools."
+  tagline: "The ultimate solution for connecting models with everything."
   actions:
     - theme: brand
       text: "Quick Start"
@@ -12,23 +12,41 @@ hero:
     - theme: alt
       text: "JavaScript SDK"
       link: /sdk/javascript/quick-start
+    - theme: alt
+      text: "Playground"
+      link: /playground/
 
 features:
-  - title: "Cross-runtime"
-    details: "Android, iOS, Qt, backend services, and browser runtimes can all expose capabilities with the same protocol."
-  - title: "Client-driven"
-    details: "Clients register tools, prompts, skills, and resources. The server indexes and routes them."
-  - title: "MCP bridge"
-    details: "The server stays thin and exposes stable bridge tools like listClients, callTools, and readResource."
+  - title: "One Bridge Surface"
+    details: "Hosts integrate with one stable MCP bridge instead of regenerating MCP tools whenever clients connect or disconnect."
+  - title: "Runtime-Owned Capabilities"
+    details: "Clients remain the source of truth for tools, prompts, skills, and resources. The server indexes and routes, but does not own business logic."
+  - title: "Ready for Real Runtimes"
+    details: "Use the JavaScript SDK for custom runtimes, or start from the packaged Chrome and VSCode integrations already included in the repo."
 ---
 
 ## What this is
 
 MDP is a language-neutral protocol for exposing internal procedures to AI. It is designed for environments where the procedure lives inside a runtime, device, or process that should not be rebuilt as a standalone service.
 
-## Start here
+## Pick A Path
 
-- Start with the [quick start](/guide/quick-start) for the shortest end-to-end path.
-- Read [what MDP is](/guide/introduction) to understand the problem and scope.
-- Review the [server tools](/server/tools) page for the fixed MCP bridge surface.
-- Use the [JavaScript SDK quick start](/sdk/javascript/quick-start) when you want to expose capabilities from a browser or local process.
+- Use [Quick Start](/guide/quick-start) if you want the shortest path from zero to a working client plus MCP bridge.
+- Use [Server / Tools](/server/tools) and [Server / APIs](/server/api) if you already understand the model and need exact tool or transport formats.
+- Use [JavaScript SDK / Quick Start](/sdk/javascript/quick-start) if you want to embed MDP into a browser page, local process, or custom runtime.
+- Use [Chrome Extension](/apps/chrome-extension) or [VSCode Extension](/apps/vscode-extension) if you want a packaged runtime integration instead of wiring the SDK from scratch.
+- Use [Playground](/playground/) if you want a docs-native surface for trying connections and inspecting capability behavior.
+
+## Typical Flow
+
+1. Start the MDP server CLI and configure it in your MCP tool.
+2. Connect one or more MDP clients over websocket or HTTP loop.
+3. Register tools, prompts, skills, and resources from those runtimes.
+4. Let your agent discover and call them through the fixed bridge tools.
+
+## Good Fits
+
+- Browser or extension capabilities that should stay inside the user session.
+- IDE or editor integrations that need local workspace context.
+- App-local or device-local operations that should not be rewritten as standalone services.
+- Local agent or backend workflows that need MCP reachability without adding another per-runtime MCP server.

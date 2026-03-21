@@ -5,6 +5,17 @@ status: MVP
 
 # Browser Client
 
+This path is kept for compatibility with older links. In the current docs structure, browser-oriented integration content is split across the JavaScript SDK docs, the Chrome extension app docs, and the Playground.
+
+## Preferred entry points
+
+- [JavaScript Quick Start](/sdk/javascript/quick-start)
+- [JavaScript Usage](/sdk/javascript/usage)
+- [Chrome Extension](/apps/chrome-extension)
+- [Playground](/playground/)
+
+## What this example is good for
+
 A browser client can expose:
 
 - page selection as a resource
@@ -125,4 +136,5 @@ For browser websocket auth, passing `auth` is enough. The client will bootstrap 
 The example starts by exposing `getPageInfo`, so the host can retrieve page title and URL before calling more specific tools.
 
 See [the Pages-hosted browser example](/examples/browser/index.html) for a concrete starter file.
+For a packaged browser integration, use [Chrome Extension](/apps/chrome-extension).
 For a docs-native configuration surface that can manage multiple connections, use the top-level [Playground](/playground/).

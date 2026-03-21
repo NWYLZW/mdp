@@ -28,7 +28,40 @@ status: Draft
 
 ## 当前仓库状态
 
-当前仓库还没有单独提供 Chrome 插件 package。最接近的起点，是浏览器示例加 JavaScript SDK。
+当前仓库已经内置一个 Chrome 插件应用，目录在 `apps/chrome-extension`。
+
+这个 app 本身就是一个 MDP client：
+
+- background service worker 负责连接 MDP server
+- 命中的页面会注入 content script 处理 DOM 相关操作
+- 插件还能注入 main-world bridge，让页面脚本自行注册工具
+
+## 默认暴露的能力
+
+当前这个 Chrome 插件 app 可以暴露这几类能力：
+
+- 标签页管理、通知、配置状态等 Chrome 侧 tools
+- 通过 content script 提供的页面 DOM 工具
+- 通过 `window.__MDP_EXTENSION_BRIDGE__` 注册的 injected tools
+- `page.listInjectedTools`、`page.callInjectedTool`、`page.getSnapshot` 这类桥接工具
+
+## 构建与加载
+
+可以这样构建 unpacked extension：
+
+```bash
+pnpm --filter @modeldriveprotocol/chrome-extension build
+```
+
+构建产物位于 `apps/chrome-extension/dist`，然后在 `chrome://extensions` 打开开发者模式并选择 Load unpacked 即可。
+
+## 配置
+
+在插件 options 页面里配置：
+
+- MDP server URL
+- 目标页面匹配规则
+- 可选的默认 main-world tool 脚本
 
 - [JavaScript / 简易上手](/zh-Hans/sdk/javascript/quick-start)
 - [JavaScript / 如何使用](/zh-Hans/sdk/javascript/usage)

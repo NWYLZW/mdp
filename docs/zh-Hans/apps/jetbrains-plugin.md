@@ -27,6 +27,11 @@ status: Draft
 
 当前仓库还没有单独提供 JetBrains 插件 package。这个页面更像推荐的集成方向，而不是现成 starter。
 
+现阶段最接近的参考实现是：
+
+- `apps/vscode-extension`，用于 IDE 本地运行时模式
+- `apps/chrome-extension`，用于浏览器本地运行时模式
+
 如果你现在只是先验证链路，优先看这些页面：
 
 - [JavaScript / 如何使用](/zh-Hans/sdk/javascript/usage)

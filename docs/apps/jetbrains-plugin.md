@@ -27,6 +27,11 @@ The important design boundary is the same as elsewhere in MDP:
 
 This repository does not yet ship a dedicated JetBrains plugin package. Treat this page as the recommended integration direction rather than a packaged starter.
 
+Today, the closest reference implementations are:
+
+- `apps/vscode-extension` for IDE-local runtime patterns
+- `apps/chrome-extension` for browser-local runtime patterns
+
 If you are prototyping first in JavaScript or another local runtime, the SDK and protocol pages are the right references:
 
 - [JavaScript Usage](/sdk/javascript/usage)

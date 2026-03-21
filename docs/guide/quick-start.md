@@ -60,6 +60,7 @@ client.register();
 ```
 
 For auth, HTTP loop mode, and browser-global usage, continue with the [JavaScript SDK docs](/sdk/javascript/usage).
+If you prefer starting from a packaged runtime integration, see [Chrome Extension](/apps/chrome-extension) or [VSCode Extension](/apps/vscode-extension).
 
 ## 3. Try It in Your MCP Tool
 

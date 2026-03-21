@@ -60,6 +60,7 @@ client.register();
 ```
 
 如果你要看 auth、HTTP loop、浏览器全局 bundle 等接入方式，继续阅读[生态 > SDKs > JavaScript](/zh-Hans/sdk/javascript/usage)。
+如果你更希望直接从现成运行时集成起步，也可以直接看 [Chrome 插件](/zh-Hans/apps/chrome-extension) 或 [VSCode 插件](/zh-Hans/apps/vscode-extension)。
 
 ## 3. 在 MCP 工具里试试看
 
