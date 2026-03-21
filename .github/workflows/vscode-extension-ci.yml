@@ -5,6 +5,8 @@ on:
     paths:
       - ".github/workflows/vscode-extension-ci.yml"
       - ".github/workflows/vscode-extension-release.yml"
+      - ".github/actions/setup-workspace/**"
+      - ".github/actions/build-workspace-package-deps/**"
       - "apps/vscode-extension/**"
       - "packages/client/**"
       - "packages/protocol/**"
@@ -19,6 +21,8 @@ on:
     paths:
       - ".github/workflows/vscode-extension-ci.yml"
       - ".github/workflows/vscode-extension-release.yml"
+      - ".github/actions/setup-workspace/**"
+      - ".github/actions/build-workspace-package-deps/**"
       - "apps/vscode-extension/**"
       - "packages/client/**"
       - "packages/protocol/**"
@@ -45,20 +49,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.28.0
-          run_install: false
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Setup workspace
+        uses: ./.github/actions/setup-workspace
 
       - name: Read extension version
         id: version
@@ -73,6 +65,9 @@ jobs:
 
       - name: Test extension
         run: pnpm --filter @modeldriveprotocol/vscode-extension test
+
+      - name: Build workspace package dependencies
+        uses: ./.github/actions/build-workspace-package-deps
 
       - name: Build extension
         run: pnpm --filter @modeldriveprotocol/vscode-extension build

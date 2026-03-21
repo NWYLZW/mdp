@@ -1,0 +1,21 @@
+name: Build Workspace Package Dependencies
+description: Build shared workspace packages needed by extension bundling.
+
+inputs:
+  client-command:
+    description: Command used to build the client package.
+    default: pnpm --filter @modeldriveprotocol/client build
+  protocol-command:
+    description: Command used to build the protocol package.
+    default: pnpm --filter @modeldriveprotocol/protocol build
+
+runs:
+  using: composite
+  steps:
+    - name: Build protocol package
+      shell: bash
+      run: ${{ inputs.protocol-command }}
+
+    - name: Build client package
+      shell: bash
+      run: ${{ inputs.client-command }}

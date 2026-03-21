@@ -13,28 +13,20 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  release:
+  build:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    outputs:
+      version: ${{ steps.version.outputs.value }}
+      archive_file: mdp-vscode-extension-v${{ steps.version.outputs.value }}.vsix
+      artifact_name: mdp-vscode-extension-v${{ steps.version.outputs.value }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.28.0
-          run_install: false
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Setup workspace
+        uses: ./.github/actions/setup-workspace
 
       - name: Validate release version
         id: version
@@ -65,6 +57,9 @@ jobs:
       - name: Test extension
         run: pnpm --filter @modeldriveprotocol/vscode-extension test
 
+      - name: Build workspace package dependencies
+        uses: ./.github/actions/build-workspace-package-deps
+
       - name: Build extension
         run: pnpm --filter @modeldriveprotocol/vscode-extension build
 
@@ -74,19 +69,45 @@ jobs:
           ARCHIVE_FILE: ${{ steps.version.outputs.file }}
         run: pnpm --filter @modeldriveprotocol/vscode-extension package:vsix -- --out "$ARCHIVE_FILE"
 
+      - name: Upload extension artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mdp-vscode-extension-v${{ steps.version.outputs.value }}
+          path: ${{ steps.version.outputs.archive }}
+          if-no-files-found: error
+          retention-days: 14
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup workspace
+        uses: ./.github/actions/setup-workspace
+
+      - name: Download packaged extension
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.build.outputs.artifact_name }}
+          path: dist
+
       - name: Publish to VS Code Marketplace
         env:
           VSCODE_EXTENSION_PUBLISHER: ${{ vars.VSCODE_EXTENSION_PUBLISHER }}
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
-          ARCHIVE_FILE: ${{ steps.version.outputs.file }}
+          ARCHIVE_FILE: dist/${{ needs.build.outputs.archive_file }}
         run: pnpm --filter @modeldriveprotocol/vscode-extension publish:vsix -- --packagePath "$ARCHIVE_FILE"
 
       - name: Create or update GitHub release
         env:
-          ARCHIVE_PATH: ${{ steps.version.outputs.archive }}
+          ARCHIVE_PATH: dist/${{ needs.build.outputs.archive_file }}
           GH_TOKEN: ${{ github.token }}
           TAG_NAME: ${{ github.ref_name }}
-          VERSION: ${{ steps.version.outputs.value }}
+          VERSION: ${{ needs.build.outputs.version }}
         run: |
           if gh release view "$TAG_NAME" >/dev/null 2>&1; then
             gh release upload "$TAG_NAME" "$ARCHIVE_PATH" --clobber

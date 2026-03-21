@@ -13,28 +13,20 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  release:
+  build:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    outputs:
+      version: ${{ steps.version.outputs.value }}
+      archive_file: mdp-chrome-extension-v${{ steps.version.outputs.value }}.zip
+      artifact_name: mdp-chrome-extension-v${{ steps.version.outputs.value }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.28.0
-          run_install: false
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Setup workspace
+        uses: ./.github/actions/setup-workspace
 
       - name: Validate release version
         id: version
@@ -65,9 +57,7 @@ jobs:
         run: pnpm --filter @modeldriveprotocol/chrome-extension test
 
       - name: Build workspace package dependencies
-        run: |
-          pnpm --filter @modeldriveprotocol/protocol build
-          pnpm --filter @modeldriveprotocol/client build
+        uses: ./.github/actions/build-workspace-package-deps
 
       - name: Build extension
         run: pnpm --filter @modeldriveprotocol/chrome-extension build
@@ -80,12 +70,32 @@ jobs:
           cd apps/chrome-extension/dist
           zip -r "../$(basename "$ARCHIVE_PATH")" .
 
+      - name: Upload extension artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mdp-chrome-extension-v${{ steps.version.outputs.value }}
+          path: ${{ steps.version.outputs.archive }}
+          if-no-files-found: error
+          retention-days: 14
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Download packaged extension
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.build.outputs.artifact_name }}
+          path: dist
+
       - name: Create or update GitHub release
         env:
-          ARCHIVE_PATH: ${{ steps.version.outputs.archive }}
+          ARCHIVE_PATH: dist/${{ needs.build.outputs.archive_file }}
           GH_TOKEN: ${{ github.token }}
           TAG_NAME: ${{ github.ref_name }}
-          VERSION: ${{ steps.version.outputs.value }}
+          VERSION: ${{ needs.build.outputs.version }}
         run: |
           if gh release view "$TAG_NAME" >/dev/null 2>&1; then
             gh release upload "$TAG_NAME" "$ARCHIVE_PATH" --clobber
