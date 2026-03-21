@@ -64,6 +64,11 @@ jobs:
       - name: Test extension
         run: pnpm --filter @modeldriveprotocol/chrome-extension test
 
+      - name: Build workspace package dependencies
+        run: |
+          pnpm --filter @modeldriveprotocol/protocol build
+          pnpm --filter @modeldriveprotocol/client build
+
       - name: Build extension
         run: pnpm --filter @modeldriveprotocol/chrome-extension build
 
