@@ -24,6 +24,7 @@
     "@types/node": "^24.0.0",
     "esbuild": "^0.25.12",
     "jsdom": "^26.1.0",
+    "mermaid": "^11.12.1",
     "typescript": "^5.9.3",
     "vitepress": "^1.6.4",
     "vitest": "^3.2.4"

@@ -2,6 +2,7 @@ import DefaultTheme from "vitepress/theme";
 import { inBrowser, useData } from "vitepress";
 import { onMounted, onUnmounted, watch } from "vue";
 import MdpPlaygroundLayout from "./components/MdpPlaygroundLayout.vue";
+import MermaidDiagram from "./components/MermaidDiagram.vue";
 import "./custom.css";
 
 function setPagedHomeClass(enabled: boolean) {
@@ -17,6 +18,7 @@ export default {
   extends: DefaultTheme,
   enhanceApp({ app }) {
     app.component("MdpPlaygroundLayout", MdpPlaygroundLayout);
+    app.component("MermaidDiagram", MermaidDiagram);
   },
   setup() {
     if (!inBrowser) {

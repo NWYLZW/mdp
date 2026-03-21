@@ -146,6 +146,24 @@ export default defineConfig({
   cleanUrls: true,
   lastUpdated: true,
   appearance: true,
+  markdown: {
+    config(md) {
+      const defaultFence = md.renderer.rules.fence;
+
+      md.renderer.rules.fence = (tokens, idx, options, env, self) => {
+        const token = tokens[idx];
+        const language = token.info.trim().split(/\s+/u)[0];
+
+        if (language === "mermaid") {
+          return `<MermaidDiagram code="${encodeURIComponent(token.content)}" />`;
+        }
+
+        return defaultFence
+          ? defaultFence(tokens, idx, options, env, self)
+          : self.renderToken(tokens, idx, options);
+      };
+    }
+  },
   head: [["link", { rel: "icon", type: "image/svg+xml", href: "/icon.svg" }]],
   locales: {
     root: {

@@ -50,6 +50,30 @@
   letter-spacing: -0.02em;
 }
 
+.VPDoc .mdp-mermaid {
+  margin: 24px 0;
+  padding: 18px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 18px;
+  background: var(--vp-c-bg-soft);
+  overflow-x: auto;
+}
+
+.VPDoc .mdp-mermaid__diagram {
+  min-width: max-content;
+}
+
+.VPDoc .mdp-mermaid svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.VPDoc .mdp-mermaid__error {
+  color: var(--vp-c-danger-1);
+  font-size: 14px;
+}
+
 .VPHome .VPButton {
   border-radius: 999px;
 }
