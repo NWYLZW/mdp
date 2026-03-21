@@ -2,6 +2,8 @@ node_modules/
 packages/*/node_modules/
 packages/*/dist/
 packages/*/*.tsbuildinfo
+apps/*/dist/
+apps/*/*.tsbuildinfo
 docs/.vitepress/cache/
 docs/.vitepress/dist/
 docs/public/assets/mdp-client.global.js
